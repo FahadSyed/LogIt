@@ -1,15 +1,18 @@
 package com.fahadalisyed.Services;
 
+import android.annotation.TargetApi;
 import android.app.NotificationManager;
 import android.app.Notification;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
+import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.fahadalisyed.Home.Home;
@@ -31,6 +34,7 @@ public class LogService extends Service {
     private Tracker m_tracker;
     private LocalBinder m_trackerBinder = new LocalBinder();
     private NotificationManager m_notificationManager;
+    private NotificationCompat.Builder m_notificationBuilder;
     private Notification m_logNotification;
     private final long m_logFrequency = 1000;
     private final int TICK = 2;
@@ -84,28 +88,27 @@ public class LogService extends Service {
      * panel for Android Phones
      */
     private void createNotification() {
-        int icon = R.drawable.icon;
+        Intent notificationIntent = new Intent(this, Home.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
         CharSequence settingsText = "LogIt";
-        long when = System.currentTimeMillis();
-        m_logNotification = new Notification(icon, settingsText, when);
-        m_logNotification.flags |= Notification.FLAG_ONGOING_EVENT;
-        m_logNotification.flags |= Notification.FLAG_NO_CLEAR;
+
+        m_notificationBuilder = new NotificationCompat.Builder(this)
+                .setContentTitle(settingsText)
+                .setSmallIcon(R.drawable.icon)
+                .setContentIntent(contentIntent);
+
+        m_logNotification = m_notificationBuilder.build();
+        m_notificationManager.notify(SERVICE_ID, m_logNotification);
     }
 
     /**
      * This method updates our notification with the Log time
      */
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private void updateSettingNotification() {
-        Context context = getApplicationContext();
-        CharSequence contentTitle = "LogIt";
-        Log.d(TAG, "yo we are inside updateSettingNotifications");
         CharSequence contentText = "Current Log: " + getFormattedTime();
-        Intent notificationIntent = new Intent(this, Home.class);
-
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
-        m_logNotification.setLatestEventInfo(context, contentTitle, contentText, contentIntent);
-        m_notificationManager.notify(SERVICE_ID, m_logNotification);
-
+        m_notificationBuilder.setContentText(contentText);
+        m_notificationManager.notify(SERVICE_ID, m_notificationBuilder.build());
     }
 
     private void displayNotifications() {
