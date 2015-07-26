@@ -1,8 +1,10 @@
 package com.fahadalisyed.Home;
 
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -35,6 +37,7 @@ public class Home extends ActionBarActivity {
     private ServiceConnection m_logServiceConnection;
     private Handler m_logHandler;
     private final long m_logFrequency = 1000;
+    private BroadcastReceiver receiver;
 
 
     @Override
@@ -50,6 +53,7 @@ public class Home extends ActionBarActivity {
         setupStartButton();
         setupLogTimeDisplay();
         setupLogServiceConnection();
+        setupNotificationReceiver();
         bindLogService();
 
     }
@@ -86,6 +90,27 @@ public class Home extends ActionBarActivity {
 
     }
 
+    private void setupNotificationReceiver() {
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("Stop");
+        filter.addAction("Start");
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+
+                if (intent.getAction().equals("Stop")) {
+                    stopLog();
+                } else if (intent.getAction().equals("Start")) {
+                    Log.d(TAG, "yo in side home start");
+
+                    startLog();
+                }
+            }
+        };
+
+        registerReceiver(receiver, filter);
+
+    }
     //region Start/Stop Setup & Display
     private void displayStartStopButtons() {
         m_startButton.setVisibility( m_logService.isTrackerRunning() ? View.GONE : View.VISIBLE );
@@ -111,9 +136,7 @@ public class Home extends ActionBarActivity {
     }
 
     private void updateElapsedTime() {
-        if (m_logService.isTrackerRunning()) {
-            m_logTimeDisplay.setText(m_logService.getFormattedTime());
-        }
+        m_logTimeDisplay.setText(m_logService.getFormattedTime());
     }
 
     //endregion
@@ -122,23 +145,30 @@ public class Home extends ActionBarActivity {
     private View.OnClickListener startButtonOnClickListener() {
         return new View.OnClickListener() {
             public void onClick(View v) {
-                m_logService.start();
-                m_startButton.setVisibility( View.GONE );
-                m_stopButton.setVisibility( View.VISIBLE );
+               startLog();
             }
         };
     }
-    public void stopTheLog() {
-        m_logService.stop();
-        m_startButton.setVisibility( View.VISIBLE );
-        m_stopButton.setVisibility(View.GONE);
+
+    private void startLog() {
+        m_logService.start();
+        m_startButton.setVisibility( View.GONE );
+        m_stopButton.setVisibility( View.VISIBLE );
     }
+
     private View.OnClickListener stopButtonOnClickListener() {
         return new View.OnClickListener() {
             public void onClick(View v) {
-                stopTheLog();
+                stopLog();
             }
         };
+    }
+
+    private void stopLog() {
+        m_logService.stop();
+        m_startButton.setVisibility( View.VISIBLE );
+        m_stopButton.setVisibility(View.GONE);
+        // TO implement: Summary screen activity
     }
     //endregion
 

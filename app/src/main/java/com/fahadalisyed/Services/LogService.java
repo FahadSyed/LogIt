@@ -41,8 +41,9 @@ public class LogService extends Service {
     private Notification m_logNotification;
     private final long m_logFrequency = 1000;
     private final int TICK = 2;
-    private BroadcastReceiver receiver;
-
+    private String m_logStartTime;
+    private String m_logEndTime;
+    private String m_logDuration;
     /**
      * This method creates a new tracker and a notification manager for our icon, time and name
      * to display on the settings panel
@@ -79,7 +80,7 @@ public class LogService extends Service {
     private Handler mHandler = new Handler() {
         public void handleMessage(Message m) {
             if (isTrackerRunning()) {
-                updateSettingNotification();
+                updateSettingNotification(false);
                 sendMessageDelayed(Message.obtain(this, TICK), m_logFrequency);
             }
         }
@@ -94,58 +95,57 @@ public class LogService extends Service {
     private void createNotification() {
         Intent notificationIntent = new Intent(this, Home.class);
 
+        // Start button in notification
+        Intent startLog = new Intent();
+        startLog.setAction("Start");
+        PendingIntent pendingIntentStart = PendingIntent.getBroadcast(this, SERVICE_ID, startLog, PendingIntent.FLAG_UPDATE_CURRENT);
+
         // Stop button in the notification
-        Intent stop = new Intent();
-        stop.setAction("Stop");
-        PendingIntent pendingIntentStop = PendingIntent.getBroadcast(this, SERVICE_ID, stop, PendingIntent.FLAG_UPDATE_CURRENT);
+        Intent stopLog = new Intent();
+        stopLog.setAction("Stop");
+        PendingIntent pendingIntentStop = PendingIntent.getBroadcast(this, SERVICE_ID, stopLog, PendingIntent.FLAG_UPDATE_CURRENT);
 
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
         CharSequence settingsText = "LogIt";
 
         m_notificationBuilder = new NotificationCompat.Builder(this)
                 .setContentTitle(settingsText)
+                .setContentText("No log started")
                 .setSmallIcon(R.drawable.icon)
                 .setContentIntent(contentIntent)
+                .addAction(R.drawable.stop_icon, "Start", pendingIntentStart)
                 .addAction(R.drawable.stop_icon, "Stop", pendingIntentStop);
 
         m_logNotification = m_notificationBuilder.build();
+        m_logNotification.flags |= Notification.FLAG_ONGOING_EVENT;
+        m_logNotification.flags |= Notification.FLAG_NO_CLEAR;
+
         m_notificationManager.notify(SERVICE_ID, m_logNotification);
 
-        setupNotificationReceiver();
     }
 
-    private void setupNotificationReceiver() {
-        IntentFilter filter = new IntentFilter();
-        filter.addAction("Stop");
-
-        receiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                stop();
-            }
-        };
-
-        registerReceiver(receiver, filter);
-
-    }
     /**
      * This method updates our notification with the Log time
      */
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    private void updateSettingNotification() {
-        CharSequence contentText = "Current Log: " + getFormattedTime();
+    private void updateSettingNotification(boolean stopped) {
+        CharSequence contentText;
+        if (!stopped) {
+            contentText = "Current Log: " + getFormattedTime();
+        } else {
+            contentText = "Log Finished: " + m_logDuration;
+        }
+
         m_notificationBuilder.setContentText(contentText);
         m_notificationManager.notify(SERVICE_ID, m_notificationBuilder.build());
     }
 
     private void displayNotifications() {
-        updateSettingNotification();
+        updateSettingNotification(false);
         mHandler.sendMessageDelayed(Message.obtain(mHandler, TICK), m_logFrequency);
     }
 
-    private void cancelNotifications() {
-        m_notificationManager.cancelAll();
-    }
+
     //endregion
 
 
@@ -161,8 +161,9 @@ public class LogService extends Service {
     }
 
     public void stop() {
+        m_logDuration = getFormattedTime();
         m_tracker.stop();
-        cancelNotifications();
+        updateSettingNotification(true);
     }
     //endregion
 
