@@ -133,6 +133,8 @@ public class Home extends ActionBarActivity {
         return new View.OnClickListener() {
             public void onClick(View v) {
                 m_logService.stop();
+                m_startButton.setVisibility( View.VISIBLE );
+                m_stopButton.setVisibility(View.GONE);
             }
         };
     }

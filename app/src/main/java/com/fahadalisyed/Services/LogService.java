@@ -10,6 +10,7 @@ import android.os.IBinder;
 import android.os.Message;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.util.Log;
 
 import com.fahadalisyed.Home.Home;
 import com.fahadalisyed.Utilities.TimeFormat;
@@ -69,8 +70,10 @@ public class LogService extends Service {
      */
     private Handler mHandler = new Handler() {
         public void handleMessage(Message m) {
-            updateSettingNotification();
-            sendMessageDelayed(Message.obtain(this, TICK), m_logFrequency);
+            if (isTrackerRunning()) {
+                updateSettingNotification();
+                sendMessageDelayed(Message.obtain(this, TICK), m_logFrequency);
+            }
         }
     };
 
@@ -95,13 +98,14 @@ public class LogService extends Service {
     private void updateSettingNotification() {
         Context context = getApplicationContext();
         CharSequence contentTitle = "LogIt";
-
+        Log.d(TAG, "yo we are inside updateSettingNotifications");
         CharSequence contentText = "Current Log: " + getFormattedTime();
         Intent notificationIntent = new Intent(this, Home.class);
 
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
         m_logNotification.setLatestEventInfo(context, contentTitle, contentText, contentIntent);
         m_notificationManager.notify(SERVICE_ID, m_logNotification);
+
     }
 
     private void displayNotifications() {
@@ -109,6 +113,9 @@ public class LogService extends Service {
         mHandler.sendMessageDelayed(Message.obtain(mHandler, TICK), m_logFrequency);
     }
 
+    private void cancelNotifications() {
+        m_notificationManager.cancelAll();
+    }
     //endregion
 
 
@@ -125,6 +132,7 @@ public class LogService extends Service {
 
     public void stop() {
         m_tracker.stop();
+        cancelNotifications();
     }
     //endregion
 
