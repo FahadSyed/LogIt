@@ -3,10 +3,13 @@ package com.fahadalisyed.Services;
 import android.annotation.TargetApi;
 import android.app.NotificationManager;
 import android.app.Notification;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Binder;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -38,6 +41,7 @@ public class LogService extends Service {
     private Notification m_logNotification;
     private final long m_logFrequency = 1000;
     private final int TICK = 2;
+    private BroadcastReceiver receiver;
 
     /**
      * This method creates a new tracker and a notification manager for our icon, time and name
@@ -89,18 +93,41 @@ public class LogService extends Service {
      */
     private void createNotification() {
         Intent notificationIntent = new Intent(this, Home.class);
+
+        // Stop button in the notification
+        Intent stop = new Intent();
+        stop.setAction("Stop");
+        PendingIntent pendingIntentStop = PendingIntent.getBroadcast(this, SERVICE_ID, stop, PendingIntent.FLAG_UPDATE_CURRENT);
+
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
         CharSequence settingsText = "LogIt";
 
         m_notificationBuilder = new NotificationCompat.Builder(this)
                 .setContentTitle(settingsText)
                 .setSmallIcon(R.drawable.icon)
-                .setContentIntent(contentIntent);
+                .setContentIntent(contentIntent)
+                .addAction(R.drawable.stop_icon, "Stop", pendingIntentStop);
 
         m_logNotification = m_notificationBuilder.build();
         m_notificationManager.notify(SERVICE_ID, m_logNotification);
+
+        setupNotificationReceiver();
     }
 
+    private void setupNotificationReceiver() {
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("Stop");
+
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                stop();
+            }
+        };
+
+        registerReceiver(receiver, filter);
+
+    }
     /**
      * This method updates our notification with the Log time
      */

@@ -128,13 +128,15 @@ public class Home extends ActionBarActivity {
             }
         };
     }
-
+    public void stopTheLog() {
+        m_logService.stop();
+        m_startButton.setVisibility( View.VISIBLE );
+        m_stopButton.setVisibility(View.GONE);
+    }
     private View.OnClickListener stopButtonOnClickListener() {
         return new View.OnClickListener() {
             public void onClick(View v) {
-                m_logService.stop();
-                m_startButton.setVisibility( View.VISIBLE );
-                m_stopButton.setVisibility(View.GONE);
+                stopTheLog();
             }
         };
     }
