@@ -168,6 +168,7 @@ public class Home extends ActionBarActivity {
         m_logService.stop();
         m_startButton.setVisibility( View.VISIBLE );
         m_stopButton.setVisibility(View.GONE);
+        m_logService.updateSettingNotification(true);
         // TO implement: Summary screen activity
     }
     //endregion

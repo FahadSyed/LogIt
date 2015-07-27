@@ -109,11 +109,10 @@ public class LogService extends Service {
                 .setSmallIcon(R.drawable.icon)
                 .setContentIntent(contentIntent)
                 .addAction(R.drawable.stop_icon, "Start", pendingIntentStart)
-                .addAction(R.drawable.stop_icon, "Stop", pendingIntentStop);
+                .addAction(R.drawable.stop_icon, "Stop", pendingIntentStop)
+                .setOngoing(true);
 
         m_logNotification = m_notificationBuilder.build();
-        m_logNotification.flags |= Notification.FLAG_ONGOING_EVENT;
-        m_logNotification.flags |= Notification.FLAG_NO_CLEAR;
 
         m_notificationManager.notify(SERVICE_ID, m_logNotification);
 
@@ -123,8 +122,9 @@ public class LogService extends Service {
      * This method updates our notification with the Log time
      */
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    private void updateSettingNotification(boolean stopped) {
+    public void updateSettingNotification( boolean stopped ) {
         CharSequence contentText;
+
         if (!stopped) {
             contentText = "Current Log: " + getFormattedTime();
         } else {
@@ -158,7 +158,7 @@ public class LogService extends Service {
     public void stop() {
         m_logDuration = getFormattedTime();
         m_tracker.stop();
-        updateSettingNotification(true);
+        updateSettingNotification( true );
     }
     //endregion
 
