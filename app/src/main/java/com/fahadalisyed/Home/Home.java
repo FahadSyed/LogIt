@@ -29,6 +29,7 @@ public class Home extends ActionBarActivity {
     the start/stop button along with the log
  */
     private static final String TAG = Home.class.getSimpleName();
+    private final long TRACKER_MILLIS = 1000;
 
     private Button m_startButton;
     private Button m_stopButton;
@@ -36,8 +37,7 @@ public class Home extends ActionBarActivity {
     private LogService m_logService;
     private ServiceConnection m_logServiceConnection;
     private Handler m_logHandler;
-    private final long m_logFrequency = 1000;
-    private BroadcastReceiver receiver;
+    private BroadcastReceiver m_receiver;
 
 
     @Override
@@ -62,7 +62,7 @@ public class Home extends ActionBarActivity {
         m_logHandler = new Handler() {
             public void handleMessage(Message m) {
                 updateElapsedTime();
-                sendMessageDelayed(Message.obtain(this, 2), m_logFrequency);
+                sendMessageDelayed(Message.obtain(this, 2), TRACKER_MILLIS);
             }
         };
     }
@@ -77,7 +77,7 @@ public class Home extends ActionBarActivity {
             @Override
             public void onServiceConnected(ComponentName name, IBinder service) {
                 Home.this.m_logService = ((LogService.LocalBinder)service).getService();
-                m_logHandler.sendMessageDelayed(Message.obtain(m_logHandler, 2), m_logFrequency);
+                m_logHandler.sendMessageDelayed(Message.obtain(m_logHandler, 2), TRACKER_MILLIS);
                 Log.d(TAG, " inside setuplogserviceconnection");
                 displayStartStopButtons();
             }
@@ -94,7 +94,7 @@ public class Home extends ActionBarActivity {
         IntentFilter filter = new IntentFilter();
         filter.addAction("Stop");
         filter.addAction("Start");
-        receiver = new BroadcastReceiver() {
+        m_receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
 
@@ -108,7 +108,7 @@ public class Home extends ActionBarActivity {
             }
         };
 
-        registerReceiver(receiver, filter);
+        registerReceiver(m_receiver, filter);
 
     }
     //region Start/Stop Setup & Display
@@ -152,8 +152,7 @@ public class Home extends ActionBarActivity {
 
     private void startLog() {
         m_logService.start();
-        m_startButton.setVisibility( View.GONE );
-        m_stopButton.setVisibility( View.VISIBLE );
+        displayStartStopButtons();
     }
 
     private View.OnClickListener stopButtonOnClickListener() {
@@ -164,10 +163,15 @@ public class Home extends ActionBarActivity {
         };
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(m_receiver);
+    }
+
     private void stopLog() {
         m_logService.stop();
-        m_startButton.setVisibility( View.VISIBLE );
-        m_stopButton.setVisibility(View.GONE);
+        displayStartStopButtons();
         m_logService.updateSettingNotification(true);
         // TO implement: Summary screen activity
     }
