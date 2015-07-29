@@ -1,6 +1,9 @@
 package com.fahadalisyed.Utilities;
 
+import android.text.format.DateFormat;
+
 import java.sql.Time;
+import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -8,7 +11,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class TimeFormat {
 
-    public static String formatElapsedTime( long milliseconds ) {
+    public static String formatElapsedTime ( long milliseconds ) {
         return String.format("%02d:%02d:%02d",
             elapsedHours( milliseconds ),
             elapsedMinutes( milliseconds ),
@@ -27,6 +30,11 @@ public class TimeFormat {
 
     public static long elapsedSeconds ( long milliseconds ) {
         return TimeUnit.MILLISECONDS.toSeconds(milliseconds) -
-                TimeUnit.MINUTES.toSeconds( TimeUnit.MILLISECONDS.toMinutes(milliseconds) );
+                TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(milliseconds));
+    }
+
+    public static String currentTime () {
+        String delegate = "hh:mm aaa";
+        return  (String) DateFormat.format(delegate, Calendar.getInstance().getTime());
     }
 }

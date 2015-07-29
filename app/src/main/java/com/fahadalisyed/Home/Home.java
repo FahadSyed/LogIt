@@ -136,7 +136,7 @@ public class Home extends ActionBarActivity {
     }
 
     private void updateElapsedTime() {
-        m_logTimeDisplay.setText(m_logService.getFormattedTime());
+        m_logTimeDisplay.setText(m_logService.getFormattedElapsedTime());
     }
 
     //endregion
@@ -163,12 +163,6 @@ public class Home extends ActionBarActivity {
         };
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        unregisterReceiver(m_receiver);
-    }
-
     private void stopLog() {
         m_logService.stop();
         displayStartStopButtons();
@@ -176,6 +170,12 @@ public class Home extends ActionBarActivity {
         // TO implement: Summary screen activity
     }
     //endregion
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(m_receiver);
+    }
 
     //region Home Options
     @Override

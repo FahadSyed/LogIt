@@ -126,7 +126,7 @@ public class LogService extends Service {
         CharSequence contentText;
 
         if (!stopped) {
-            contentText = "Current Log: " + getFormattedTime();
+            contentText = "Current Log: " + getFormattedElapsedTime();
         } else {
             contentText = "Log Finished: " + m_logDuration;
         }
@@ -134,12 +134,6 @@ public class LogService extends Service {
         m_notificationBuilder.setContentText(contentText);
         m_notificationManager.notify(SERVICE_ID, m_notificationBuilder.build());
     }
-
-    private void displayNotifications() {
-        updateSettingNotification(false);
-        mHandler.sendMessageDelayed(Message.obtain(mHandler, TICK), m_logFrequency);
-    }
-
 
     //endregion
 
@@ -152,17 +146,18 @@ public class LogService extends Service {
      */
     public void start() {
         m_tracker.start();
-        displayNotifications();
+        updateSettingNotification(false);
+        mHandler.sendMessageDelayed(Message.obtain(mHandler, TICK), m_logFrequency);
     }
 
     public void stop() {
-        m_logDuration = getFormattedTime();
+        m_logDuration = getFormattedElapsedTime();
         m_tracker.stop();
         updateSettingNotification( true );
     }
     //endregion
 
-    public String getFormattedTime() {
+    public String getFormattedElapsedTime() {
         long elapsedTimeMillis = m_tracker.getElapsedTime();
         return TimeFormat.formatElapsedTime( elapsedTimeMillis );
     }
