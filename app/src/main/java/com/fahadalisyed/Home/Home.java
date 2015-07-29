@@ -166,7 +166,6 @@ public class Home extends ActionBarActivity {
     private void stopLog() {
         m_logService.stop();
         displayStartStopButtons();
-        m_logService.updateSettingNotification(true);
         // TO implement: Summary screen activity
     }
     //endregion

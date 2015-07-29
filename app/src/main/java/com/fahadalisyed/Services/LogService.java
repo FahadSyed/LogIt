@@ -48,7 +48,6 @@ public class LogService extends Service {
         super.onCreate();
         m_tracker = new Tracker(); //Create a new Tracker Object
         m_notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
-        createNotification();
     }
 
     @Override
@@ -75,7 +74,7 @@ public class LogService extends Service {
     private Handler mHandler = new Handler() {
         public void handleMessage(Message m) {
             if (isTrackerRunning()) {
-                updateSettingNotification(false);
+                updateSettingNotification();
                 sendMessageDelayed(Message.obtain(this, TICK), m_logFrequency);
             }
         }
@@ -84,59 +83,48 @@ public class LogService extends Service {
     //region Notifications
 
     /**
-     * This method is responsible for displaying the Tempura and time on the settings
-     * panel for Android Phones
+     * This method updates our notification with the Log time and start/stop buttons
      */
-    private void createNotification() {
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    public void updateSettingNotification() {
         Intent notificationIntent = new Intent(this, Home.class);
 
-        // Start button in notification
-        Intent startLog = new Intent();
-        startLog.setAction("Start");
-        PendingIntent pendingIntentStart = PendingIntent.getBroadcast(this, SERVICE_ID, startLog, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        // Stop button in the notification
-        Intent stopLog = new Intent();
-        stopLog.setAction("Stop");
-        PendingIntent pendingIntentStop = PendingIntent.getBroadcast(this, SERVICE_ID, stopLog, PendingIntent.FLAG_UPDATE_CURRENT);
-
+        //TODO: Refactor RE5610
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
         CharSequence settingsText = "LogIt";
 
         m_notificationBuilder = new NotificationCompat.Builder(this)
                 .setContentTitle(settingsText)
-                .setContentText("No log started")
                 .setSmallIcon(R.drawable.icon)
                 .setContentIntent(contentIntent)
-                .addAction(R.drawable.stop_icon, "Start", pendingIntentStart)
-                .addAction(R.drawable.stop_icon, "Stop", pendingIntentStop)
                 .setOngoing(true);
 
-        m_logNotification = m_notificationBuilder.build();
-
-        m_notificationManager.notify(SERVICE_ID, m_logNotification);
-
-    }
-
-    /**
-     * This method updates our notification with the Log time
-     */
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    public void updateSettingNotification( boolean stopped ) {
         CharSequence contentText;
 
-        if (!stopped) {
+        if (isTrackerRunning()) {
+            // Stop button in the notification
+            Intent stopLog = new Intent();
+            stopLog.setAction("Stop");
+            PendingIntent pendingIntentStop = PendingIntent.getBroadcast(this, SERVICE_ID, stopLog, PendingIntent.FLAG_UPDATE_CURRENT);
+
+            m_notificationBuilder.addAction(R.drawable.stop_icon, "Stop", pendingIntentStop);
             contentText = "Current Log: " + getFormattedElapsedTime();
         } else {
+            // Start button in notification
+            Intent startLog = new Intent();
+            startLog.setAction("Start");
+            PendingIntent pendingIntentStart = PendingIntent.getBroadcast(this, SERVICE_ID, startLog, PendingIntent.FLAG_UPDATE_CURRENT);
+
+            m_notificationBuilder.addAction(R.drawable.stop_icon, "Start", pendingIntentStart);
             contentText = "Log Finished: " + m_logDuration;
         }
 
         m_notificationBuilder.setContentText(contentText);
-        m_notificationManager.notify(SERVICE_ID, m_notificationBuilder.build());
+        m_logNotification = m_notificationBuilder.build();
+        m_notificationManager.notify(SERVICE_ID, m_logNotification);
     }
 
     //endregion
-
 
     //region Tracker Start/Stop
 
@@ -146,14 +134,14 @@ public class LogService extends Service {
      */
     public void start() {
         m_tracker.start();
-        updateSettingNotification(false);
+        updateSettingNotification();
         mHandler.sendMessageDelayed(Message.obtain(mHandler, TICK), m_logFrequency);
     }
 
     public void stop() {
         m_logDuration = getFormattedElapsedTime();
         m_tracker.stop();
-        updateSettingNotification( true );
+        updateSettingNotification();
     }
     //endregion
 
