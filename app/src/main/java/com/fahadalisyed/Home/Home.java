@@ -94,6 +94,7 @@ public class Home extends ActionBarActivity {
         IntentFilter filter = new IntentFilter();
         filter.addAction("Stop");
         filter.addAction("Start");
+
         m_receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -166,7 +167,6 @@ public class Home extends ActionBarActivity {
     private void stopLog() {
         m_logService.stop();
         displayStartStopButtons();
-        // TO implement: Summary screen activity
     }
     //endregion
 
