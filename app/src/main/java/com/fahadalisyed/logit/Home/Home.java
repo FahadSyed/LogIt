@@ -1,4 +1,4 @@
-package com.fahadalisyed.Home;
+package com.fahadalisyed.logit.Home;
 
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -17,7 +17,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.fahadalisyed.Services.LogService;
+import com.fahadalisyed.logit.Services.LogService;
 import com.fahadalisyed.logit.R;
 
 import android.os.Handler;

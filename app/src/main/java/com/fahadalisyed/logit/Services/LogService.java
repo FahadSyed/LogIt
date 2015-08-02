@@ -1,4 +1,4 @@
-package com.fahadalisyed.Services;
+package com.fahadalisyed.logit.Services;
 
 import android.annotation.TargetApi;
 import android.app.NotificationManager;
@@ -13,8 +13,8 @@ import android.os.Message;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.support.v4.app.NotificationCompat;
-import com.fahadalisyed.Home.Home;
-import com.fahadalisyed.Utilities.TimeFormat;
+import com.fahadalisyed.logit.Home.Home;
+import com.fahadalisyed.logit.Utilities.TimeFormat;
 import com.fahadalisyed.logit.R;
 
 /**
@@ -68,6 +68,7 @@ public class LogService extends Service {
         }
     }
     //endregion
+
     /*
      * Create a Handler to that updated the notification at the appropriate frequency
      */

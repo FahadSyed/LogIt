@@ -1,6 +1,6 @@
-package com.fahadalisyed.Services;
+package com.fahadalisyed.logit.Services;
 
-import com.fahadalisyed.Utilities.GetTime;
+import com.fahadalisyed.logit.Utilities.GetTime;
 
 /**
  * Created by fahadsyed on 15-07-25.
