@@ -44,7 +44,7 @@ public class Home extends ActionBarActivity {
     private ServiceConnection m_logServiceConnection;
     private Handler m_logHandler;
     private BroadcastReceiver m_receiver;
-
+    private String m_elapsedTime;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,7 +66,8 @@ public class Home extends ActionBarActivity {
     private void setupLogHandler() {
         m_logHandler = new Handler() {
             public void handleMessage(Message m) {
-                updateElapsedTime();
+                m_elapsedTime = m_logService.getFormattedElapsedTime();
+                updateElapsedTime(m_elapsedTime);
                 sendMessageDelayed(Message.obtain(this, 2), TRACKER_MILLIS);
             }
         };
@@ -137,8 +138,8 @@ public class Home extends ActionBarActivity {
         m_logTimeDisplay = (TextView) findViewById( R.id.logTimeDisplay );
     }
 
-    private void updateElapsedTime() {
-        m_logTimeDisplay.setText(m_logService.getFormattedElapsedTime());
+    private void updateElapsedTime( String elapsedTime ) {
+        m_logTimeDisplay.setText(elapsedTime);
     }
 
     //endregion
@@ -189,6 +190,7 @@ public class Home extends ActionBarActivity {
     @Override
     protected void onResume() {
         Log.d(TAG, "onResume");
+        updateElapsedTime(m_elapsedTime);
         super.onResume();
     }
 
@@ -202,13 +204,16 @@ public class Home extends ActionBarActivity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        Log.d(TAG, "onSaveInstanceState");
+        outState.putString(ELAPSED_TIME, m_elapsedTime);
+        Log.d(TAG, "onSaveInstanceState: " + m_elapsedTime);
         super.onSaveInstanceState(outState);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        Log.d(TAG, "onRestoreInstanceState");
+        m_elapsedTime = savedInstanceState.getString(ELAPSED_TIME);
+        Log.d(TAG, "onRestoreInstanceState: " + m_elapsedTime);
+        updateElapsedTime(m_elapsedTime);
         super.onRestoreInstanceState(savedInstanceState);
     }
 
