@@ -33,9 +33,11 @@ public class Home extends ActionBarActivity {
     the start/stop button along with the log
  */
     private static final String TAG = Home.class.getSimpleName();
-    static final String ELAPSED_TIME = "elapsedTime";
+    private static final String START_DATE = "StartDate";
+    private static final String END_DATE = "EndDate";
+    private static final String ELAPSED_TIME = "ElapsedTime";
 
-    private final long TRACKER_MILLIS = 750;
+    private final long TRACKER_MILLIS = 1000;
 
     private Button m_startButton;
     private Button m_stopButton;
@@ -152,8 +154,7 @@ public class Home extends ActionBarActivity {
 
     public void stopLog(View view) {
         stopLog();
-        Intent intent = new Intent(this, Confirm.class);
-        Home.this.startActivity(intent);
+        startConfirmScreen();
     }
 
     public void stopLog() {
@@ -179,7 +180,7 @@ public class Home extends ActionBarActivity {
     @Override
     protected void onResume() {
         Log.d(TAG, "onResume");
-        //updateElapsedTime(m_elapsedTime);
+        updateElapsedTime(m_elapsedTime);
         super.onResume();
     }
 
@@ -222,5 +223,17 @@ public class Home extends ActionBarActivity {
     }
 
 
+    //endregion
+
+    //region Confirm Screen start - Info passing
+
+    private void startConfirmScreen() {
+        Intent intent = new Intent(this, Confirm.class);
+        intent.putExtra(START_DATE, m_logService.getStartDate().getTime());
+        intent.putExtra(END_DATE, m_logService.getEndDate().getTime());
+        intent.putExtra(ELAPSED_TIME, m_logService.getDuration());
+
+        Home.this.startActivity(intent);
+    }
     //endregion
 }

@@ -38,7 +38,7 @@ public class LogService extends Service {
     private NotificationManager m_notificationManager;
     private NotificationCompat.Builder m_notificationBuilder;
     private Notification m_logNotification;
-    private final long m_logFrequency = 750;
+    private final long m_logFrequency = 1000;
     private final int TICK = 2;
 
     /**
@@ -144,16 +144,28 @@ public class LogService extends Service {
     public void stop() {
         m_tracker.stop();
         updateSettingNotification();
-        Log.d(TAG, "Start time: " + TimeFormat.formatDateTime(m_tracker.getStartDate()));
+        Log.d(TAG, "Start time: " + m_tracker.getStartDate());
         Log.d(TAG, "End time: " + TimeFormat.formatDateTime( m_tracker.getEndDate()) );
         Log.d(TAG, "Duration time: " + TimeFormat.formatElapsedTime( m_tracker.getDuration() ));
-
     }
     //endregion
 
     public String getFormattedElapsedTime() {
         long elapsedTimeMillis = m_tracker.getElapsedTime();
         return TimeFormat.formatElapsedTime( elapsedTimeMillis );
+    }
+
+    //TODO: put this in an interface
+    public Date getStartDate() {
+        return m_tracker.getStartDate();
+    }
+
+    public Date getEndDate() {
+        return m_tracker.getEndDate();
+    }
+
+    public long getDuration() {
+        return m_tracker.getDuration();
     }
 
     public boolean isTrackerRunning() {
