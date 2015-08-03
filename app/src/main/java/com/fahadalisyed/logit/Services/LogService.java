@@ -144,7 +144,7 @@ public class LogService extends Service {
     public void stop() {
         m_tracker.stop();
         updateSettingNotification();
-        Log.d(TAG, "Start time: " + m_tracker.getStartDate());
+        Log.d(TAG, "Start time: " + TimeFormat.formatDate( m_tracker.getStartDate()) );
         Log.d(TAG, "End time: " + TimeFormat.formatDateTime( m_tracker.getEndDate()) );
         Log.d(TAG, "Duration time: " + TimeFormat.formatElapsedTime( m_tracker.getDuration() ));
     }

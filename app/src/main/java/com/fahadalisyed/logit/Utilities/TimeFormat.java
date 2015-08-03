@@ -4,6 +4,7 @@ import android.text.format.DateFormat;
 import android.util.Log;
 
 import java.sql.Time;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -47,8 +48,13 @@ public class TimeFormat {
                 TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(milliseconds));
     }
 
-    public static String formatDateTime(Date time)  {
+    public static String formatDateTime( Date time )  {
         String delegate = "hh:mm aaa";
         return  (String) DateFormat.format(delegate, time);
+    }
+
+    public static String formatDate( Date date ) {
+        SimpleDateFormat dayFormat = new SimpleDateFormat("MMM d yyyy");
+        return dayFormat.format( date );
     }
 }

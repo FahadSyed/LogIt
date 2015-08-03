@@ -67,6 +67,9 @@ public class Confirm extends ActionBarActivity {
     }
 
     private void setViews() {
+        m_startDateTV.setText( TimeFormat.formatDate(m_startDate) );
+        m_endDateTV.setText( TimeFormat.formatDate(m_endDate) );
+
         m_startTimeTV.setText( TimeFormat.formatDateTime(m_startDate) );
         m_endTimeTV.setText( TimeFormat.formatDateTime(m_endDate) );
         m_durationTV.setText( TimeFormat.formatElapsedTime(m_duration) );
