@@ -17,10 +17,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.fahadalisyed.logit.Log.LogItem;
 import com.fahadalisyed.logit.Services.LogService;
 import com.fahadalisyed.logit.R;
 
 import android.os.Handler;
+
+import java.util.Calendar;
+import java.util.Date;
 
 
 public class Home extends ActionBarActivity {
@@ -29,6 +33,8 @@ public class Home extends ActionBarActivity {
     the start/stop button along with the log
  */
     private static final String TAG = Home.class.getSimpleName();
+    static final String ELAPSED_TIME = "elapsedTime";
+
     private final long TRACKER_MILLIS = 1000;
 
     private Button m_startButton;
@@ -38,7 +44,6 @@ public class Home extends ActionBarActivity {
     private ServiceConnection m_logServiceConnection;
     private Handler m_logHandler;
     private BroadcastReceiver m_receiver;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,7 +83,6 @@ public class Home extends ActionBarActivity {
             public void onServiceConnected(ComponentName name, IBinder service) {
                 Home.this.m_logService = ((LogService.LocalBinder)service).getService();
                 m_logHandler.sendMessageDelayed(Message.obtain(m_logHandler, 2), TRACKER_MILLIS);
-                Log.d(TAG, " inside setuplogserviceconnection");
                 displayStartStopButtons();
             }
 
@@ -98,12 +102,9 @@ public class Home extends ActionBarActivity {
         m_receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-
                 if (intent.getAction().equals("Stop")) {
                     stopLog();
                 } else if (intent.getAction().equals("Start")) {
-                    Log.d(TAG, "yo in side home start");
-
                     startLog();
                 }
             }
@@ -153,6 +154,7 @@ public class Home extends ActionBarActivity {
 
     private void startLog() {
         m_logService.start();
+        Date startTime = Calendar.getInstance().getTime();
         displayStartStopButtons();
     }
 
@@ -166,6 +168,7 @@ public class Home extends ActionBarActivity {
 
     private void stopLog() {
         m_logService.stop();
+        Date endTime = Calendar.getInstance().getTime();
         displayStartStopButtons();
     }
     //endregion
@@ -173,7 +176,20 @@ public class Home extends ActionBarActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        Log.d(TAG, "OnDestroy");
+        unbindService(m_logServiceConnection);
         unregisterReceiver(m_receiver);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        Log.d(TAG, "onResume");
+        super.onResume();
     }
 
     //region Home Options
@@ -182,6 +198,18 @@ public class Home extends ActionBarActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_home, menu);
         return true;
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        Log.d(TAG, "onSaveInstanceState");
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        Log.d(TAG, "onRestoreInstanceState");
+        super.onRestoreInstanceState(savedInstanceState);
     }
 
     @Override
@@ -198,5 +226,7 @@ public class Home extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+
     //endregion
 }

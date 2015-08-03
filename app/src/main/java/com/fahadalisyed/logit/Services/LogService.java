@@ -13,9 +13,13 @@ import android.os.Message;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
+
 import com.fahadalisyed.logit.Home.Home;
 import com.fahadalisyed.logit.Utilities.TimeFormat;
 import com.fahadalisyed.logit.R;
+
+import java.util.Date;
 
 /**
  * Created by fahadsyed on 15-07-25.
@@ -36,9 +40,7 @@ public class LogService extends Service {
     private Notification m_logNotification;
     private final long m_logFrequency = 1000;
     private final int TICK = 2;
-    private String m_logStartTime;
-    private String m_logEndTime;
-    private String m_logDuration;
+
     /**
      * This method creates a new tracker and a notification manager for our icon, time and name
      * to display on the settings panel
@@ -117,7 +119,7 @@ public class LogService extends Service {
             PendingIntent pendingIntentStart = PendingIntent.getBroadcast(this, SERVICE_ID, startLog, PendingIntent.FLAG_UPDATE_CURRENT);
 
             m_notificationBuilder.addAction(R.drawable.stop_icon, "Start", pendingIntentStart);
-            contentText = "Log Finished: " + m_logDuration;
+            contentText = "Log Finished: " + TimeFormat.formatElapsedTime( m_tracker.getDuration() );
         }
 
         m_notificationBuilder.setContentText(contentText);
@@ -137,12 +139,15 @@ public class LogService extends Service {
         m_tracker.start();
         updateSettingNotification();
         mHandler.sendMessageDelayed(Message.obtain(mHandler, TICK), m_logFrequency);
+        Log.d(TAG, "Start time: " + TimeFormat.formatDateTime( m_tracker.getStartDate()) );
     }
 
     public void stop() {
-        m_logDuration = getFormattedElapsedTime();
         m_tracker.stop();
         updateSettingNotification();
+        Log.d(TAG, "End time: " + TimeFormat.formatDateTime( m_tracker.getEndDate()) );
+        Log.d(TAG, "Duration time: " + TimeFormat.formatElapsedTime( m_tracker.getDuration() ));
+
     }
     //endregion
 

@@ -4,6 +4,7 @@ import android.text.format.DateFormat;
 
 import java.sql.Time;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -33,8 +34,8 @@ public class TimeFormat {
                 TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(milliseconds));
     }
 
-    public static String currentTime () {
+    public static String formatDateTime(Date time)  {
         String delegate = "hh:mm aaa";
-        return  (String) DateFormat.format(delegate, Calendar.getInstance().getTime());
+        return  (String) DateFormat.format(delegate, time);
     }
 }

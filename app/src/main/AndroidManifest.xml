@@ -14,7 +14,7 @@ package="com.fahadalisyed.logit">
     android:label="Google Calendar API Android Quickstart"
     android:theme="@style/AppTheme" >
     <activity
-        android:name=".Home.MainActivity"
+        android:name=".Home.Home"
         android:label="LOG IT V1" >
         <intent-filter>
             <action android:name="android.intent.action.MAIN" />
