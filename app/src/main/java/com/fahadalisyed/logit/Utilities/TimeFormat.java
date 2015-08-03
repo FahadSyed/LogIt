@@ -19,7 +19,7 @@ public class TimeFormat {
             return String.format("%d seconds",
                     elapsedSeconds( milliseconds )
             );
-        } else if ( milliseconds > 60000 && milliseconds < 204000) {
+        } else if ( milliseconds > 60000 && milliseconds < 36000000) {
             return String.format("%d minutes, %d seconds",
                     elapsedMinutes( milliseconds ),
                     elapsedSeconds( milliseconds )

@@ -94,7 +94,7 @@ public class MainActivity extends Activity {
 
         mService = new com.google.api.services.calendar.Calendar.Builder(
                 transport, jsonFactory, credential)
-                .setApplicationName("Google Calendar API Android Quickstart")
+                .setApplicationName("LogIt")
                 .build();
     }
 

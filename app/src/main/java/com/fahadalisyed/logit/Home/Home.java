@@ -144,7 +144,6 @@ public class Home extends ActionBarActivity {
 
     private void startLog() {
         m_logService.start();
-        Date startTime = Calendar.getInstance().getTime();
         displayStartStopButtons();
     }
 
@@ -154,12 +153,11 @@ public class Home extends ActionBarActivity {
 
     public void stopLog(View view) {
         stopLog();
-        startConfirmScreen();
     }
 
     public void stopLog() {
         m_logService.stop();
-        Date endTime = Calendar.getInstance().getTime();
+        startConfirmScreen();
         displayStartStopButtons();
     }
     //endregion

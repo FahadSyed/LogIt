@@ -17,13 +17,14 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TimeZone;
-
 /**
  * An asynchronous task that handles the Google Calendar API call.
  * Placing the API calls in their own task ensures the UI stays responsive.
  */
 public class ApiAsyncTask extends AsyncTask<Void, Void, Boolean> {
-        private MainActivity mActivity;
+    static final int REQUEST_AUTHORIZATION = 1001;
+
+    private MainActivity mActivity;
         private Confirm mConfirmActivity;
         private LogItem m_logItem;
     /**
@@ -104,6 +105,8 @@ public class ApiAsyncTask extends AsyncTask<Void, Void, Boolean> {
         try {
             event = mConfirmActivity.mService.events().insert(calendarId, event).execute();
             Log.d("ApiAsyncTask", "Sucessfull event");
+        } catch (UserRecoverableAuthIOException e) {
+            mConfirmActivity.startActivityForResult(e.getIntent(), REQUEST_AUTHORIZATION);
         } catch (Exception e) {
             Log.d("ApiAsyncTack", "Failed event: " + e.getLocalizedMessage());
         }
