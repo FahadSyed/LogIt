@@ -38,7 +38,7 @@ public class LogService extends Service {
     private NotificationManager m_notificationManager;
     private NotificationCompat.Builder m_notificationBuilder;
     private Notification m_logNotification;
-    private final long m_logFrequency = 1000;
+    private final long m_logFrequency = 10;
     private final int TICK = 2;
 
     /**

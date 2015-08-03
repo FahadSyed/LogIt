@@ -35,7 +35,7 @@ public class Home extends ActionBarActivity {
     private static final String TAG = Home.class.getSimpleName();
     static final String ELAPSED_TIME = "elapsedTime";
 
-    private final long TRACKER_MILLIS = 1000;
+    private final long TRACKER_MILLIS = 10;
 
     private Button m_startButton;
     private Button m_stopButton;
@@ -122,14 +122,10 @@ public class Home extends ActionBarActivity {
 
     private void setupStartButton() {
         m_startButton = (Button)findViewById( R.id.startButton );
-        m_startButton.setOnClickListener(startButtonOnClickListener());
-
     }
 
     private void setupStopButton() {
         m_stopButton = (Button) findViewById( R.id.stopButton );
-        m_stopButton.setOnClickListener(stopButtonOnClickListener());
-
     }
     //endregion
 
@@ -144,30 +140,21 @@ public class Home extends ActionBarActivity {
 
     //endregion
 
-    //region Start/Stop OnClick
-    private View.OnClickListener startButtonOnClickListener() {
-        return new View.OnClickListener() {
-            public void onClick(View v) {
-               startLog();
-            }
-        };
-    }
-
     private void startLog() {
         m_logService.start();
         Date startTime = Calendar.getInstance().getTime();
         displayStartStopButtons();
     }
 
-    private View.OnClickListener stopButtonOnClickListener() {
-        return new View.OnClickListener() {
-            public void onClick(View v) {
-                stopLog();
-            }
-        };
+    public void startLog(View view) {
+        startLog();
     }
 
-    private void stopLog() {
+    public void stopLog(View view) {
+        stopLog();
+    }
+
+    public void stopLog() {
         m_logService.stop();
         Date endTime = Calendar.getInstance().getTime();
         displayStartStopButtons();
