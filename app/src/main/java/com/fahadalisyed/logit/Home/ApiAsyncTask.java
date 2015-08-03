@@ -4,6 +4,7 @@ package com.fahadalisyed.logit.Home;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.fahadalisyed.logit.Log.LogItem;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GooglePlayServicesAvailabilityIOException;
 import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException;
 import com.google.api.client.util.DateTime;
@@ -11,16 +12,20 @@ import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.model.*;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TimeZone;
 
 /**
  * An asynchronous task that handles the Google Calendar API call.
  * Placing the API calls in their own task ensures the UI stays responsive.
  */
-public class ApiAsyncTask extends AsyncTask<Void, Void, Void> {
-    private MainActivity mActivity;
-
+public class ApiAsyncTask extends AsyncTask<Void, Void, Boolean> {
+        private MainActivity mActivity;
+        private Confirm mConfirmActivity;
+        private LogItem m_logItem;
     /**
      * Constructor.
      * @param activity MainActivity that spawned this task.
@@ -29,87 +34,78 @@ public class ApiAsyncTask extends AsyncTask<Void, Void, Void> {
         this.mActivity = activity;
     }
 
+    ApiAsyncTask(Confirm activity, LogItem item) {
+        this.mConfirmActivity = activity;
+        this.m_logItem = item;
+    }
+
+
     /**
      * Background task to call Google Calendar API.
      * @param params no parameters needed for this task.
      */
     @Override
-    protected Void doInBackground(Void... params) {
+    protected Boolean doInBackground(Void... params) {
         try {
-            mActivity.clearResultsText();
-            mActivity.updateResultsText(getDataFromApi());
-
-        } catch (final GooglePlayServicesAvailabilityIOException availabilityException) {
-            mActivity.showGooglePlayServicesAvailabilityErrorDialog(
-                    availabilityException.getConnectionStatusCode());
-
-        } catch (UserRecoverableAuthIOException userRecoverableException) {
-            mActivity.startActivityForResult(
-                    userRecoverableException.getIntent(),
-                    MainActivity.REQUEST_AUTHORIZATION);
-
+            Log.d("ApiAsyncTask", "We inside doInBackground");
+            createEvent();
+            return true;
         } catch (Exception e) {
-            mActivity.updateStatus("The following error occurred:\n" +
-                    e.getMessage());
+            //mConfirmActivity.updateStatus("The following error occurred:\n" +
+                    //e.getMessage());
         }
-        return null;
+        return false;
     }
 
-    /**
-     * Fetch a list of the next 10 events from the primary calendar.
-     * @return List of Strings describing returned events.
-     * @throws IOException
-     */
-    private List<String> getDataFromApi() throws IOException {
-        // List the next 10 events from the primary calendar.
-        DateTime now = new DateTime(System.currentTimeMillis());
-        List<String> eventStrings = new ArrayList<String>();
-        Events events = mActivity.mService.events().list("primary")
-                .setMaxResults(10)
-                .setTimeMin(now)
-                .setOrderBy("startTime")
-                .setSingleEvents(true)
-                .execute();
-        List<Event> items = events.getItems();
+    @Override
+    protected void onPostExecute(Boolean aBoolean) {
+        super.onPostExecute(aBoolean);
 
-        for (Event event : items) {
-            DateTime start = event.getStart().getDateTime();
-            if (start == null) {
-                // All-day events don't have start times, so just use
-                // the start date.
-                start = event.getStart().getDate();
-            }
-            eventStrings.add(
-                    String.format("%s (%s)", event.getSummary(), start));
+        if (aBoolean) {
+            mConfirmActivity.updateStatus("Saved to Google Calendar");
+        } else {
+            mConfirmActivity.updateStatus("Failed to save to calendar");
         }
-        createEvent();
-        return eventStrings;
     }
 
     public void createEvent() {
         Event event = new Event()
-                .setSummary("Google I/O 2015")
-                .setLocation("800 Howard St., San Francisco, CA 94103")
-                .setDescription("A chance to hear more about Google's developer products.");
+                .setSummary(this.m_logItem.getName())
+                .setLocation("Mississauga, Toronto") // Temporary
+                .setDescription(this.m_logItem.getDescription());
 
         DateTime startDateTime = new DateTime("2015-05-26T09:00:00-02:00");
+
+        SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+
+
+        TimeZone zone = TimeZone.getTimeZone("America/Toronto");
+
+        startDateTime = new DateTime(this.m_logItem.getStartTime(), zone);
+
+
         EventDateTime start = new EventDateTime()
                 .setDateTime(startDateTime)
-                .setTimeZone("America/Los_Angeles");
+                .setTimeZone("America/Toronto");
         event.setStart(start);
 
         DateTime endDateTime = new DateTime("2015-05-26T17:00:00-03:00");
+
+        endDateTime = new DateTime(this.m_logItem.getEndTime(), zone);
+
+
         EventDateTime end = new EventDateTime()
                 .setDateTime(endDateTime)
-                .setTimeZone("America/Los_Angeles");
+                .setTimeZone("America/Toronto");
+
         event.setEnd(end);
 
         String calendarId = "primary";
         try {
-            event = mActivity.mService.events().insert("primary", event).execute();
-            Log.d("Fahad", "Fahad1");
+            event = mConfirmActivity.mService.events().insert(calendarId, event).execute();
+            Log.d("ApiAsyncTask", "Sucessfull event");
         } catch (Exception e) {
-            Log.d("Fahad", "Fahad2: " + e.getLocalizedMessage());
+            Log.d("ApiAsyncTack", "Failed event: " + e.getLocalizedMessage());
         }
     }
 }
