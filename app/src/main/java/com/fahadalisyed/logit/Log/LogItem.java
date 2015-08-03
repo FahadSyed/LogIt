@@ -6,7 +6,9 @@ import java.util.Date;
  * Created by fahadsyed on 15-08-02.
  */
 public class LogItem {
-
+    /**
+     * This class is the log items which are saved to Google calendar.
+     */
     private String m_name;
     private String m_description;
     private Date m_startTime;
@@ -14,18 +16,18 @@ public class LogItem {
     private long m_duration;
 
 
-    public LogItem(
-            String m_name,
-            String m_description,
-            Date m_startTime,
-            Date m_endTime,
-            long m_duration
+    protected LogItem(
+            String name,
+            String description,
+            Date startTime,
+            Date endTime,
+            long duration
     ) {
-        this.m_name = m_name;
-        this.m_description = m_description;
-        this.m_startTime = m_startTime;
-        this.m_endTime = m_endTime;
-        this.m_duration = m_duration;
+        this.m_name = name;
+        this.m_description = description;
+        this.m_startTime = startTime;
+        this.m_endTime = endTime;
+        this.m_duration = duration;
     }
 
     public String getName() {

@@ -6,9 +6,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.fahadalisyed.logit.Log.LogItem;
+import com.fahadalisyed.logit.Log.LogItemManager;
 import com.fahadalisyed.logit.R;
 import com.fahadalisyed.logit.Utilities.TimeFormat;
 
@@ -30,12 +33,16 @@ public class Confirm extends ActionBarActivity {
     private String m_activityName;
     private String m_activityDescription;
 
+    private EditText m_activityNameET;
+    private EditText m_activityDescriptionET;
+
     private TextView m_durationTV;
     private TextView m_startDateTV;
     private TextView m_endDateTV;
     private TextView m_startTimeTV;
     private TextView m_endTimeTV;
 
+    private LogItemManager m_logItemManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,6 +53,8 @@ public class Confirm extends ActionBarActivity {
 
         setupGivenInformationViews();
         setViews();
+
+        m_logItemManager = LogItemManager.getInstance();
     }
 
     private void extractIntent( Intent intent ) {
@@ -58,6 +67,8 @@ public class Confirm extends ActionBarActivity {
     }
 
     private void setupGivenInformationViews() {
+        m_activityNameET = (EditText)findViewById(R.id.logItemName);
+        m_activityDescriptionET = (EditText)findViewById(R.id.logItemDescription);
         m_durationTV = (TextView)findViewById(R.id.duration);
         m_startDateTV = (TextView)findViewById(R.id.startDate);
         m_endDateTV = (TextView)findViewById(R.id.endDate);
@@ -73,6 +84,21 @@ public class Confirm extends ActionBarActivity {
         m_startTimeTV.setText( TimeFormat.formatDateTime(m_startDate) );
         m_endTimeTV.setText( TimeFormat.formatDateTime(m_endDate) );
         m_durationTV.setText( TimeFormat.formatElapsedTime(m_duration) );
+    }
+
+    public void saveToCalendar( View v ) {
+        String logItemName = m_activityNameET.getText().toString();
+        String logItemDescription = m_activityDescriptionET.getText().toString();
+
+        LogItem item = m_logItemManager.createLogItem(
+                logItemName,
+                logItemDescription,
+                m_startDate,
+                m_endDate,
+                m_duration
+        );
+
+        m_logItemManager.printLogItem( item );
     }
 
     @Override
@@ -100,7 +126,6 @@ public class Confirm extends ActionBarActivity {
             return true;
         } else if( id == android.R.id.home) {
             finish();
-            Log.d("CONFIRM", "item id: " + id);
             overridePendingTransition(R.anim.fadein, R.anim.fadeout);
             return true;
         }

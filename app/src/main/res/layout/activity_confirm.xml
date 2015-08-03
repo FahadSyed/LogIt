@@ -11,7 +11,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Activity"
-            android:id="@+id/textView"
+            android:id="@+id/logItemNameHolder"
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true" />
@@ -19,8 +19,8 @@
         <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/editText"
-            android:layout_below="@+id/textView"
+            android:id="@+id/logItemName"
+            android:layout_below="@+id/logItemNameHolder"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_alignParentRight="true"
@@ -31,16 +31,16 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Description"
-            android:id="@+id/textView2"
-            android:layout_below="@+id/editText"
+            android:id="@+id/logItemDescriptionHolder"
+            android:layout_below="@+id/logItemName"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true" />
 
         <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/editText2"
-            android:layout_below="@+id/textView2"
+            android:id="@+id/logItemDescription"
+            android:layout_below="@+id/logItemDescriptionHolder"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_alignParentRight="true"
@@ -50,7 +50,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Save to Calendar"
-            android:id="@+id/button2"
+            android:id="@+id/calendarSaveButton"
+            android:onClick="saveToCalendar"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="37dp" />
@@ -61,7 +62,7 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="Duration"
             android:id="@+id/duration"
-            android:layout_below="@+id/editText2"
+            android:layout_below="@+id/logItemDescription"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_marginTop="20dp" />
@@ -72,18 +73,18 @@
             android:layout_height="match_parent"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_alignRight="@+id/editText2"
-            android:layout_alignEnd="@+id/editText2"
+            android:layout_alignRight="@+id/logItemDescription"
+            android:layout_alignEnd="@+id/logItemDescription"
             android:layout_below="@+id/duration"
             android:layout_marginTop="20dp"
-            android:layout_above="@+id/button2">
+            android:layout_above="@+id/calendarSaveButton">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="Start"
-                android:id="@+id/duration"
+                android:id="@+id/StartHolder"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
@@ -95,9 +96,9 @@
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="Date"
                 android:id="@+id/startDate"
-                android:layout_below="@+id/duration"
-                android:layout_toRightOf="@+id/duration"
-                android:layout_toEndOf="@+id/duration"
+                android:layout_below="@+id/StartHolder"
+                android:layout_toRightOf="@+id/StartHolder"
+                android:layout_toEndOf="@+id/StartHolder"
                 android:paddingTop="5dp" />
 
             <TextView
