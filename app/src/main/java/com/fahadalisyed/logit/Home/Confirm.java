@@ -74,17 +74,20 @@ public class Confirm extends ActionBarActivity {
         m_endTimeTV.setText( TimeFormat.formatDateTime(m_endDate) );
         m_durationTV.setText( TimeFormat.formatElapsedTime(m_duration) );
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_confirm, menu);
         return true;
     }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
         overridePendingTransition(R.anim.fadein, R.anim.fadeout);
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
