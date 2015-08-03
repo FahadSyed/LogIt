@@ -22,19 +22,13 @@ import java.util.TimeZone;
  * Placing the API calls in their own task ensures the UI stays responsive.
  */
 public class ApiAsyncTask extends AsyncTask<Void, Void, Boolean> {
-    static final int REQUEST_AUTHORIZATION = 1001;
 
-    private MainActivity mActivity;
-        private Confirm mConfirmActivity;
-        private LogItem m_logItem;
+    private Confirm mConfirmActivity;
+    private LogItem m_logItem;
     /**
      * Constructor.
      * @param activity MainActivity that spawned this task.
      */
-    ApiAsyncTask(MainActivity activity) {
-        this.mActivity = activity;
-    }
-
     ApiAsyncTask(Confirm activity, LogItem item) {
         this.mConfirmActivity = activity;
         this.m_logItem = item;
@@ -51,9 +45,13 @@ public class ApiAsyncTask extends AsyncTask<Void, Void, Boolean> {
             Log.d("ApiAsyncTask", "We inside doInBackground");
             createEvent();
             return true;
+        } catch (UserRecoverableAuthIOException userRecoverableException) {
+            mConfirmActivity.startActivityForResult(
+                    userRecoverableException.getIntent(),
+                    mConfirmActivity.REQUEST_AUTHORIZATION);
         } catch (Exception e) {
-            //mConfirmActivity.updateStatus("The following error occurred:\n" +
-                    //e.getMessage());
+                mConfirmActivity.updateStatus("The following error occurred:\n" +
+                    e.getMessage());
         }
         return false;
     }
@@ -69,32 +67,22 @@ public class ApiAsyncTask extends AsyncTask<Void, Void, Boolean> {
         }
     }
 
-    public void createEvent() {
+    public void createEvent() throws IOException{
         Event event = new Event()
                 .setSummary(this.m_logItem.getName())
                 .setLocation("Mississauga, Toronto") // Temporary
                 .setDescription(this.m_logItem.getDescription());
 
-        DateTime startDateTime = new DateTime("2015-05-26T09:00:00-02:00");
-
-        SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-
 
         TimeZone zone = TimeZone.getTimeZone("America/Toronto");
 
-        startDateTime = new DateTime(this.m_logItem.getStartTime(), zone);
-
-
+        DateTime startDateTime = new DateTime(this.m_logItem.getStartTime(), zone);
         EventDateTime start = new EventDateTime()
                 .setDateTime(startDateTime)
                 .setTimeZone("America/Toronto");
         event.setStart(start);
 
-        DateTime endDateTime = new DateTime("2015-05-26T17:00:00-03:00");
-
-        endDateTime = new DateTime(this.m_logItem.getEndTime(), zone);
-
-
+        DateTime endDateTime = new DateTime(this.m_logItem.getEndTime(), zone);
         EventDateTime end = new EventDateTime()
                 .setDateTime(endDateTime)
                 .setTimeZone("America/Toronto");
@@ -102,13 +90,6 @@ public class ApiAsyncTask extends AsyncTask<Void, Void, Boolean> {
         event.setEnd(end);
 
         String calendarId = "primary";
-        try {
-            event = mConfirmActivity.mService.events().insert(calendarId, event).execute();
-            Log.d("ApiAsyncTask", "Sucessfull event");
-        } catch (UserRecoverableAuthIOException e) {
-            mConfirmActivity.startActivityForResult(e.getIntent(), REQUEST_AUTHORIZATION);
-        } catch (Exception e) {
-            Log.d("ApiAsyncTack", "Failed event: " + e.getLocalizedMessage());
-        }
+        mConfirmActivity.mService.events().insert(calendarId, event).execute();
     }
 }

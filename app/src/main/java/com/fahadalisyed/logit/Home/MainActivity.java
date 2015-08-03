@@ -32,6 +32,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends Activity {
+
     /**
      * A Google Calendar API service object used to access the API.
      * Note: Do not confuse this class with API library's model classes, which
@@ -170,7 +171,7 @@ public class MainActivity extends Activity {
             chooseAccount();
         } else {
             if (isDeviceOnline()) {
-                new ApiAsyncTask(this).execute();
+                //new ApiAsyncTask(this).execute();
             } else {
                 mStatusText.setText("No network connection available.");
             }

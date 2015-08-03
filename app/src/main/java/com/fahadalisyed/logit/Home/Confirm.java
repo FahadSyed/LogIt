@@ -43,12 +43,9 @@ public class Confirm extends ActionBarActivity {
     private static final String END_DATE = "EndDate";
     private static final String ELAPSED_TIME = "ElapsedTime";
 
-    private LogItem m_logItem;
     private Date m_startDate;
     private Date m_endDate;
     private long m_duration;
-    private String m_activityName;
-    private String m_activityDescription;
 
     private EditText m_activityNameET;
     private EditText m_activityDescriptionET;
@@ -60,7 +57,7 @@ public class Confirm extends ActionBarActivity {
     private TextView m_endTimeTV;
 
     private LogItemManager m_logItemManager;
-
+    private LogItem m_logItem;
     // Google Calendar
 
     com.google.api.services.calendar.Calendar mService;
@@ -138,7 +135,7 @@ public class Confirm extends ActionBarActivity {
         String logItemName = m_activityNameET.getText().toString();
         String logItemDescription = m_activityDescriptionET.getText().toString();
 
-        LogItem item = m_logItemManager.createLogItem(
+        m_logItem = m_logItemManager.createLogItem(
                 logItemName,
                 logItemDescription,
                 m_startDate,
@@ -146,8 +143,8 @@ public class Confirm extends ActionBarActivity {
                 m_duration
         );
 
-        refreshResults(item);
-        m_logItemManager.printLogItem(item);
+        saveLogItem();
+        m_logItemManager.printLogItem(m_logItem);
     }
 
     /**
@@ -182,6 +179,7 @@ public class Confirm extends ActionBarActivity {
                         SharedPreferences.Editor editor = settings.edit();
                         editor.putString(PREF_ACCOUNT_NAME, accountName);
                         editor.commit();
+                        saveUsingAsyncTask();
                     }
                 } else if (resultCode == RESULT_CANCELED) {
                     updateStatus("Account unspecified");
@@ -191,6 +189,7 @@ public class Confirm extends ActionBarActivity {
                 if (resultCode != RESULT_OK) {
                     chooseAccount();
                 }
+                saveUsingAsyncTask();
                 break;
         }
 
@@ -202,18 +201,21 @@ public class Confirm extends ActionBarActivity {
      * email address isn't known yet, then call chooseAccount()
      * method so the user can pick an account.
      */
-    private void refreshResults( LogItem itemToSave ) {
+    private void saveLogItem() {
         if (credential.getSelectedAccountName() == null) {
             chooseAccount();
         } else {
-            if (isDeviceOnline()) {
-                new ApiAsyncTask(this, itemToSave).execute();
-            } else {
-                updateStatus("No network connection available");
-            }
+            saveUsingAsyncTask();
         }
     }
 
+    private void saveUsingAsyncTask() {
+        if (isDeviceOnline()) {
+            new ApiAsyncTask(this, m_logItem).execute();
+        } else {
+            updateStatus("No network connection available");
+        }
+    }
     /**
      * Show a status message in the list header TextView; called from background
      * threads and async tasks that need to update the UI (in the UI thread).
