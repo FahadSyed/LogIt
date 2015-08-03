@@ -38,7 +38,7 @@ public class LogService extends Service {
     private NotificationManager m_notificationManager;
     private NotificationCompat.Builder m_notificationBuilder;
     private Notification m_logNotification;
-    private final long m_logFrequency = 10;
+    private final long m_logFrequency = 750;
     private final int TICK = 2;
 
     /**
@@ -139,12 +139,12 @@ public class LogService extends Service {
         m_tracker.start();
         updateSettingNotification();
         mHandler.sendMessageDelayed(Message.obtain(mHandler, TICK), m_logFrequency);
-        Log.d(TAG, "Start time: " + TimeFormat.formatDateTime( m_tracker.getStartDate()) );
     }
 
     public void stop() {
         m_tracker.stop();
         updateSettingNotification();
+        Log.d(TAG, "Start time: " + TimeFormat.formatDateTime(m_tracker.getStartDate()));
         Log.d(TAG, "End time: " + TimeFormat.formatDateTime( m_tracker.getEndDate()) );
         Log.d(TAG, "Duration time: " + TimeFormat.formatElapsedTime( m_tracker.getDuration() ));
 

@@ -35,7 +35,7 @@ public class Home extends ActionBarActivity {
     private static final String TAG = Home.class.getSimpleName();
     static final String ELAPSED_TIME = "elapsedTime";
 
-    private final long TRACKER_MILLIS = 10;
+    private final long TRACKER_MILLIS = 750;
 
     private Button m_startButton;
     private Button m_stopButton;
@@ -152,6 +152,8 @@ public class Home extends ActionBarActivity {
 
     public void stopLog(View view) {
         stopLog();
+        Intent intent = new Intent(this, Confirm.class);
+        Home.this.startActivity(intent);
     }
 
     public void stopLog() {
@@ -177,7 +179,7 @@ public class Home extends ActionBarActivity {
     @Override
     protected void onResume() {
         Log.d(TAG, "onResume");
-        updateElapsedTime(m_elapsedTime);
+        //updateElapsedTime(m_elapsedTime);
         super.onResume();
     }
 
