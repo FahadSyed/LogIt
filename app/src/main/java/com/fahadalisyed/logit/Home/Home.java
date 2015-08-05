@@ -50,27 +50,27 @@ public class Home extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(TAG, "onCreate");
         setContentView(R.layout.activity_home);
         // Start the LogService
         startService(new Intent(this, LogService.class));
 
         // setup the buttons/handers/display/connection
         setupStopButton();
-        setupLogHandler();
         setupStartButton();
+        setupLogHandler();
         setupLogTimeDisplay();
         setupLogServiceConnection();
         setupNotificationReceiver();
         bindLogService();
-
     }
 
     private void setupLogHandler() {
         m_logHandler = new Handler() {
             public void handleMessage(Message m) {
-                m_elapsedTime = m_logService.getFormattedElapsedTime();
-                updateElapsedTime(m_elapsedTime);
-                sendMessageDelayed(Message.obtain(this, 2), TRACKER_MILLIS);
+                    m_elapsedTime = m_logService.getFormattedElapsedTime();
+                    updateElapsedTime(m_elapsedTime);
+                    sendMessageDelayed(Message.obtain(this, 2), TRACKER_MILLIS);
             }
         };
     }
@@ -136,10 +136,15 @@ public class Home extends ActionBarActivity {
         m_logTimeDisplay = (TextView) findViewById( R.id.logTimeDisplay );
     }
 
-    private void updateElapsedTime( String elapsedTime ) {
-        m_logTimeDisplay.setText(elapsedTime);
-    }
 
+    public void updateElapsedTime( final String elapsedTime ) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                m_logTimeDisplay.setText(elapsedTime);
+            }
+        });
+    }
     //endregion
 
     private void startLog() {
@@ -178,7 +183,8 @@ public class Home extends ActionBarActivity {
     @Override
     protected void onResume() {
         Log.d(TAG, "onResume");
-        updateElapsedTime(m_elapsedTime);
+        if (m_logService != null && m_logService.isTrackerRunning())
+            updateElapsedTime(m_elapsedTime);
         super.onResume();
     }
 

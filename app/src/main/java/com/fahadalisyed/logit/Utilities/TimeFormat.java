@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 public class TimeFormat {
 
     public static String formatElapsedTime ( long milliseconds ) {
+        Log.d("TimeFormat", "milliseconds: " + milliseconds);
         if (milliseconds < 60000 ) {
             return String.format("%d seconds",
                     elapsedSeconds( milliseconds )

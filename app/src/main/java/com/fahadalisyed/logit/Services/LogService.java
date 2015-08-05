@@ -78,6 +78,7 @@ public class LogService extends Service {
         public void handleMessage(Message m) {
             if (isTrackerRunning()) {
                 updateSettingNotification();
+                
                 sendMessageDelayed(Message.obtain(this, TICK), m_logFrequency);
             }
         }
