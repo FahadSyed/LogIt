@@ -145,6 +145,9 @@ public class Confirm extends ActionBarActivity {
 
         saveLogItem();
         m_logItemManager.printLogItem(m_logItem);
+
+        //finish();
+        //overridePendingTransition(R.anim.fadein, R.anim.fadeout);
     }
 
     /**
@@ -217,7 +220,7 @@ public class Confirm extends ActionBarActivity {
         }
     }
     /**
-     * Show a status message in the list header TextView; called from background
+     * Show a status message in the toast; called from background
      * threads and async tasks that need to update the UI (in the UI thread).
      * @param message a String to display in the UI header TextView.
      */
@@ -228,6 +231,10 @@ public class Confirm extends ActionBarActivity {
 
         Toast toast = Toast.makeText(context, text, duration);
         toast.show();
+        if (message.equals("Saved to calendar")) {
+            finish();
+            overridePendingTransition(R.anim.fadein, R.anim.fadeout);
+        }
     }
 
     /**

@@ -36,7 +36,7 @@ public class Home extends ActionBarActivity {
     private static final String START_DATE = "StartDate";
     private static final String END_DATE = "EndDate";
     private static final String ELAPSED_TIME = "ElapsedTime";
-
+    private static final int STOP = 0;
     private final long TRACKER_MILLIS = 1000;
 
     private Button m_startButton;
@@ -63,14 +63,19 @@ public class Home extends ActionBarActivity {
         setupLogServiceConnection();
         setupNotificationReceiver();
         bindLogService();
+        m_logHandler.sendMessageDelayed(Message.obtain(m_logHandler, 1), TRACKER_MILLIS);
+
     }
 
     private void setupLogHandler() {
         m_logHandler = new Handler() {
             public void handleMessage(Message m) {
+                if (m_logService.isTrackerRunning()) {
                     m_elapsedTime = m_logService.getFormattedElapsedTime();
-                    updateElapsedTime(m_elapsedTime);
                     sendMessageDelayed(Message.obtain(this, 2), TRACKER_MILLIS);
+                    updateElapsedTime(m_elapsedTime);
+                }
+
             }
         };
     }
@@ -148,6 +153,7 @@ public class Home extends ActionBarActivity {
     //endregion
 
     private void startLog() {
+        m_logHandler.sendMessageDelayed(Message.obtain(m_logHandler, 2), TRACKER_MILLIS);
         m_logService.start();
         displayStartStopButtons();
     }
@@ -164,8 +170,15 @@ public class Home extends ActionBarActivity {
         m_logService.stop();
         startConfirmScreen();
         displayStartStopButtons();
+        updateElapsedTime("0 seconds");
     }
     //endregion
+
+
+    @Override
+    public void finish() {
+        super.finish();
+    }
 
     @Override
     protected void onDestroy() {
