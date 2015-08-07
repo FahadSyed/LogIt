@@ -102,7 +102,7 @@ public class Home extends Activity {
             public void onServiceConnected(ComponentName name, IBinder service) {
                 Home.this.m_logService = ((LogService.LocalBinder)service).getService();
                 m_logHandler.sendMessageDelayed(Message.obtain(m_logHandler, 2), TRACKER_MILLIS);
-                displayStartStopButtons();
+                //displayStartStopButtons();
             }
 
             @Override

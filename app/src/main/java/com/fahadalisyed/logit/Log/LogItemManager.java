@@ -29,6 +29,7 @@ public class LogItemManager {
     public LogItem createLogItem (
             String name,
             String description,
+            String location,
             Date startTime,
             Date endTime,
             long duration
@@ -39,6 +40,7 @@ public class LogItemManager {
         return new LogItem(
                 name,
                 description,
+                location,
                 startTime,
                 endTime,
                 duration

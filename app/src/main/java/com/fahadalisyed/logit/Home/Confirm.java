@@ -6,9 +6,11 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -24,6 +26,8 @@ import com.fahadalisyed.logit.R;
 import com.fahadalisyed.logit.Utilities.TimeFormat;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.google.api.client.http.HttpTransport;
@@ -32,10 +36,14 @@ import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.client.util.ExponentialBackOff;
 import com.google.api.services.calendar.CalendarScopes;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
-public class Confirm extends Activity {
+public class Confirm extends Activity implements
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     /**
      * This class is the confirm screen where the user inputs information
      * and is shown information before submitting the event to google calendar
@@ -47,6 +55,7 @@ public class Confirm extends Activity {
     private Date m_startDate;
     private Date m_endDate;
     private long m_duration;
+    private String m_logLocation;
 
     private EditText m_activityNameET;
     private EditText m_activityDescriptionET;
@@ -62,7 +71,6 @@ public class Confirm extends Activity {
     // Google Calendar
 
     com.google.api.services.calendar.Calendar mService;
-
     GoogleAccountCredential credential;
     final HttpTransport transport = AndroidHttp.newCompatibleTransport();
     final JsonFactory jsonFactory = GsonFactory.getDefaultInstance();
@@ -73,6 +81,9 @@ public class Confirm extends Activity {
     private static final String PREF_ACCOUNT_NAME = "accountName";
     private static final String[] SCOPES = { CalendarScopes.CALENDAR };
 
+    // Location
+    private GoogleApiClient m_googleApiClient;
+    private Location m_lastLocation;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,7 +111,7 @@ public class Confirm extends Activity {
                 .setApplicationName("Google Calendar API Android Quickstart")
                 .build();
 
-
+        buildGoogleApiClient();
     }
 
     private void extractIntent( Intent intent ) {
@@ -139,6 +150,7 @@ public class Confirm extends Activity {
         m_logItem = m_logItemManager.createLogItem(
                 logItemName,
                 logItemDescription,
+                m_logLocation,
                 m_startDate,
                 m_endDate,
                 m_duration
@@ -151,6 +163,20 @@ public class Confirm extends Activity {
         //overridePendingTransition(R.anim.fadein, R.anim.fadeout);
     }
 
+    /**
+     * Used for last known locations, build the api client to use location
+     * services
+     */
+    protected synchronized void buildGoogleApiClient() {
+        Log.d("Confirmjava", "we made it");
+        m_googleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+        m_googleApiClient.connect();
+
+    }
     /**
      * Called when an activity launched here (specifically, AccountPicker
      * and authorization) exits, giving you the requestCode you started it with,
@@ -232,7 +258,7 @@ public class Confirm extends Activity {
 
         Toast toast = Toast.makeText(context, text, duration);
         toast.show();
-        if (message.equals("Saved to calendar")) {
+        if (message.equals("Saved to Google Calendar")) {
             finish();
             overridePendingTransition(R.anim.fadein, R.anim.fadeout);
         }
@@ -326,5 +352,39 @@ public class Confirm extends Activity {
         }
         overridePendingTransition(R.anim.fadein, R.anim.fadeout);
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+        m_lastLocation = LocationServices.FusedLocationApi.getLastLocation(
+                m_googleApiClient);
+
+        if (m_lastLocation != null) {
+
+            double latitude = m_lastLocation.getLatitude();
+            double longitude = m_lastLocation.getLongitude();
+            Geocoder gcd = new Geocoder(getApplicationContext(), Locale.getDefault());
+            List<Address> addresses = null;
+
+            try {
+                addresses = gcd.getFromLocation(latitude, longitude, 1);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            if (addresses.size() > 0) {
+                Address currentAddress = addresses.get(0);
+                m_logLocation = currentAddress.getLocality() + ", " + currentAddress.getCountryCode();
+            }
+        }
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        isGooglePlayServicesAvailable();
     }
 }

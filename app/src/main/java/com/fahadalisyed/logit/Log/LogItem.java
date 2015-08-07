@@ -11,20 +11,22 @@ public class LogItem {
      */
     private String m_name;
     private String m_description;
+    private String m_location;
     private Date m_startTime;
     private Date m_endTime;
     private long m_duration;
 
-
     protected LogItem(
             String name,
             String description,
+            String location,
             Date startTime,
             Date endTime,
             long duration
     ) {
         this.m_name = name;
         this.m_description = description;
+        this.m_location = location;
         this.m_startTime = startTime;
         this.m_endTime = endTime;
         this.m_duration = duration;
@@ -33,6 +35,10 @@ public class LogItem {
     public String getName() {
         return m_name;
     }
+
+    public String getLocation() {
+        return m_location;
+    } //TODO: make this a Location object
 
     public String getDescription() {
         return m_description;

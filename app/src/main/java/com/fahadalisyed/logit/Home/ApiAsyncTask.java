@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.TimeZone;
 /**
@@ -70,7 +71,7 @@ public class ApiAsyncTask extends AsyncTask<Void, Void, Boolean> {
     public void createEvent() throws IOException{
         Event event = new Event()
                 .setSummary(this.m_logItem.getName())
-                .setLocation("Mississauga, Toronto") // Temporary
+                .setLocation(this.m_logItem.getLocation())
                 .setDescription(this.m_logItem.getDescription());
 
 
@@ -81,13 +82,19 @@ public class ApiAsyncTask extends AsyncTask<Void, Void, Boolean> {
                 .setDateTime(startDateTime)
                 .setTimeZone("America/Toronto");
         event.setStart(start);
-
         DateTime endDateTime = new DateTime(this.m_logItem.getEndTime(), zone);
         EventDateTime end = new EventDateTime()
                 .setDateTime(endDateTime)
                 .setTimeZone("America/Toronto");
 
         event.setEnd(end);
+        event.setCreated(endDateTime);
+
+        Event.Reminders reminders = new Event.Reminders()
+                .setUseDefault(false)
+                .setOverrides(Arrays.asList(new EventReminder[] {}));
+        event.setReminders(reminders);
+
 
         String calendarId = "primary";
         mConfirmActivity.mService.events().insert(calendarId, event).execute();
