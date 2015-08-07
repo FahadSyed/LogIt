@@ -1,6 +1,7 @@
 package com.fahadalisyed.logit.Home;
 
 import android.accounts.AccountManager;
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -34,7 +35,7 @@ import com.google.api.services.calendar.CalendarScopes;
 import java.util.Arrays;
 import java.util.Date;
 
-public class Confirm extends ActionBarActivity {
+public class Confirm extends Activity {
     /**
      * This class is the confirm screen where the user inputs information
      * and is shown information before submitting the event to google calendar

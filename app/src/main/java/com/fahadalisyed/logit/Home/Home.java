@@ -1,5 +1,6 @@
 package com.fahadalisyed.logit.Home;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -20,24 +21,29 @@ import android.widget.TextView;
 import com.fahadalisyed.logit.Log.LogItem;
 import com.fahadalisyed.logit.Services.LogService;
 import com.fahadalisyed.logit.R;
+import com.fahadalisyed.logit.morpher.DigitalClockView;
+import com.fahadalisyed.logit.morpher.font.DFont;
 
 import android.os.Handler;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
 
-public class Home extends ActionBarActivity {
+public class Home extends Activity {
 /*
     This class is the first activity the user encounters, contains
     the start/stop button along with the log
  */
+    public static final String EXTRA_MORPHING_DURATION = "morphing_duration";
     private static final String TAG = Home.class.getSimpleName();
     private static final String START_DATE = "StartDate";
     private static final String END_DATE = "EndDate";
     private static final String ELAPSED_TIME = "ElapsedTime";
     private static final int STOP = 0;
     private final long TRACKER_MILLIS = 1000;
+
 
     private Button m_startButton;
     private Button m_stopButton;
@@ -47,6 +53,9 @@ public class Home extends ActionBarActivity {
     private Handler m_logHandler;
     private BroadcastReceiver m_receiver;
     private String m_elapsedTime;
+
+    private DigitalClockView mDigitalClockView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,7 +72,9 @@ public class Home extends ActionBarActivity {
         setupLogServiceConnection();
         setupNotificationReceiver();
         bindLogService();
+        setupDigitalClockView();
         m_logHandler.sendMessageDelayed(Message.obtain(m_logHandler, 1), TRACKER_MILLIS);
+        updateElapsedTime("00:00:00"); // Temporary!
 
     }
 
@@ -141,12 +152,23 @@ public class Home extends ActionBarActivity {
         m_logTimeDisplay = (TextView) findViewById( R.id.logTimeDisplay );
     }
 
+    private void setupDigitalClockView() {
+
+        mDigitalClockView = (DigitalClockView) findViewById(R.id.digitalClock);
+        mDigitalClockView.setFont(new DFont(130, 10));
+
+        int morphingDuration = getIntent().getIntExtra(EXTRA_MORPHING_DURATION, DigitalClockView.DEFAULT_MORPHING_DURATION);
+        mDigitalClockView.setMorphingDuration(morphingDuration);
+
+    }
 
     public void updateElapsedTime( final String elapsedTime ) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                m_logTimeDisplay.setText(elapsedTime);
+                if (!mDigitalClockView.isMorphingAnimationRunning()) {
+                    mDigitalClockView.setTime(elapsedTime);
+                }
             }
         });
     }
@@ -170,7 +192,7 @@ public class Home extends ActionBarActivity {
         m_logService.stop();
         startConfirmScreen();
         displayStartStopButtons();
-        updateElapsedTime("0 seconds");
+        updateElapsedTime("00:00:00"); // Temporary!
     }
     //endregion
 
@@ -249,6 +271,7 @@ public class Home extends ActionBarActivity {
         intent.putExtra(START_DATE, m_logService.getStartDate().getTime());
         intent.putExtra(END_DATE, m_logService.getEndDate().getTime());
         intent.putExtra(ELAPSED_TIME, m_logService.getDuration());
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
         Home.this.startActivity(intent);
     }

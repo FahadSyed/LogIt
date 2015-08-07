@@ -16,7 +16,7 @@ public class TimeFormat {
 
     public static String formatElapsedTime ( long milliseconds ) {
         Log.d("TimeFormat", "milliseconds: " + milliseconds);
-        if (milliseconds < 60000 ) {
+        /*if (milliseconds < 60000 ) {
             return String.format("%d seconds",
                     elapsedSeconds( milliseconds )
             );
@@ -25,9 +25,9 @@ public class TimeFormat {
                     elapsedMinutes( milliseconds ),
                     elapsedSeconds( milliseconds )
             );
-        }
+        }*/
 
-        return String.format("%d hours %d minutes, %d seconds",
+        return String.format("%02d:%02d:%02d",
                 elapsedHours( milliseconds ),
                 elapsedMinutes( milliseconds ),
                 elapsedSeconds( milliseconds )
