@@ -15,6 +15,7 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name=".Home.Home"
+            android:launchMode="singleTop"
             android:label="LogIt" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

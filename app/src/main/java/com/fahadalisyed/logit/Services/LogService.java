@@ -99,7 +99,7 @@ public class LogService extends Service {
 
         m_notificationBuilder = new NotificationCompat.Builder(this)
                 .setContentTitle(settingsText)
-                .setSmallIcon(R.drawable.icon)
+                .setSmallIcon(R.drawable.ic_launcher)
                 .setContentIntent(contentIntent)
                 .setOngoing(true);
 
@@ -119,7 +119,7 @@ public class LogService extends Service {
             startLog.setAction("Start");
             PendingIntent pendingIntentStart = PendingIntent.getBroadcast(this, SERVICE_ID, startLog, PendingIntent.FLAG_UPDATE_CURRENT);
 
-            m_notificationBuilder.addAction(R.drawable.stop_icon, "Start", pendingIntentStart);
+            m_notificationBuilder.addAction(R.drawable.start_icon, "Start", pendingIntentStart);
             contentText = "Log Finished: " + TimeFormat.formatElapsedTime( m_tracker.getDuration() );
         }
 
