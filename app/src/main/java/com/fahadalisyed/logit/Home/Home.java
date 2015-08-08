@@ -38,16 +38,16 @@ public class Home extends Activity {
  */
     public static final String EXTRA_MORPHING_DURATION = "morphing_duration";
     private static final String TAG = Home.class.getSimpleName();
+    private static final String INITIAL_MORPHER_TEXT = "00:00:00";
+    private static final String STOP = "Stop";
+    private static final String START = "Start";
     private static final String START_DATE = "StartDate";
     private static final String END_DATE = "EndDate";
     private static final String ELAPSED_TIME = "ElapsedTime";
-    private static final int STOP = 0;
     private final long TRACKER_MILLIS = 1000;
-
 
     private Button m_startButton;
     private Button m_stopButton;
-    private TextView m_logTimeDisplay;
     private LogService m_logService;
     private ServiceConnection m_logServiceConnection;
     private Handler m_logHandler;
@@ -68,13 +68,12 @@ public class Home extends Activity {
         setupStopButton();
         setupStartButton();
         setupLogHandler();
-        setupLogTimeDisplay();
         setupLogServiceConnection();
         setupNotificationReceiver();
         bindLogService();
         setupDigitalClockView();
         m_logHandler.sendMessageDelayed(Message.obtain(m_logHandler, 1), TRACKER_MILLIS);
-        updateElapsedTime("00:00:00"); // Temporary!
+        updateElapsedTime(INITIAL_MORPHER_TEXT); // Temporary!
 
     }
 
@@ -102,7 +101,6 @@ public class Home extends Activity {
             public void onServiceConnected(ComponentName name, IBinder service) {
                 Home.this.m_logService = ((LogService.LocalBinder)service).getService();
                 m_logHandler.sendMessageDelayed(Message.obtain(m_logHandler, 2), TRACKER_MILLIS);
-                //displayStartStopButtons();
             }
 
             @Override
@@ -115,15 +113,15 @@ public class Home extends Activity {
 
     private void setupNotificationReceiver() {
         IntentFilter filter = new IntentFilter();
-        filter.addAction("Stop");
-        filter.addAction("Start");
+        filter.addAction(STOP);
+        filter.addAction(START);
 
         m_receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                if (intent.getAction().equals("Stop")) {
+                if (intent.getAction().equals(STOP)) {
                     stopLog();
-                } else if (intent.getAction().equals("Start")) {
+                } else if (intent.getAction().equals(START)) {
                     startLog();
                 }
             }
@@ -132,7 +130,7 @@ public class Home extends Activity {
         registerReceiver(m_receiver, filter);
 
     }
-    //region Start/Stop Setup & Display
+
     private void displayStartStopButtons() {
         m_startButton.setVisibility( m_logService.isTrackerRunning() ? View.GONE : View.VISIBLE );
         m_stopButton.setVisibility((m_logService.isTrackerRunning() ? View.VISIBLE : View.GONE));
@@ -144,12 +142,6 @@ public class Home extends Activity {
 
     private void setupStopButton() {
         m_stopButton = (Button) findViewById( R.id.stopButton );
-    }
-    //endregion
-
-    //region Elapsed Time Setup and Updated
-    private void setupLogTimeDisplay() {
-        m_logTimeDisplay = (TextView) findViewById( R.id.logTimeDisplay );
     }
 
     private void setupDigitalClockView() {
@@ -172,7 +164,6 @@ public class Home extends Activity {
             }
         });
     }
-    //endregion
 
     private void startLog() {
         m_logHandler.sendMessageDelayed(Message.obtain(m_logHandler, 2), TRACKER_MILLIS);
@@ -192,10 +183,8 @@ public class Home extends Activity {
         m_logService.stop();
         startConfirmScreen();
         displayStartStopButtons();
-        updateElapsedTime("00:00:00"); // Temporary!
+        updateElapsedTime(INITIAL_MORPHER_TEXT); // Temporary!
     }
-    //endregion
-
 
     @Override
     public void finish() {
@@ -220,6 +209,7 @@ public class Home extends Activity {
         Log.d(TAG, "onResume");
         if (m_logService != null && m_logService.isTrackerRunning())
             updateElapsedTime(m_elapsedTime);
+        //displayStartStopButtons();
         super.onResume();
     }
 
@@ -261,11 +251,6 @@ public class Home extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-
-    //endregion
-
-    //region Confirm Screen start - Info passing
-
     private void startConfirmScreen() {
         Intent intent = new Intent(this, Confirm.class);
         intent.putExtra(START_DATE, m_logService.getStartDate().getTime());
@@ -275,5 +260,4 @@ public class Home extends Activity {
 
         Home.this.startActivity(intent);
     }
-    //endregion
 }
