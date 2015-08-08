@@ -58,6 +58,12 @@ public class ApiAsyncTask extends AsyncTask<Void, Void, Boolean> {
     }
 
     @Override
+    protected void onProgressUpdate(Void... values) {
+        super.onProgressUpdate(values);
+        mConfirmActivity.updateStatus("Saving");
+    }
+
+    @Override
     protected void onPostExecute(Boolean aBoolean) {
         super.onPostExecute(aBoolean);
 

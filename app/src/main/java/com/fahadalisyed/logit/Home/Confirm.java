@@ -13,6 +13,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,6 +21,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.dd.CircularProgressButton;
 import com.fahadalisyed.logit.Log.LogItem;
 import com.fahadalisyed.logit.Log.LogItemManager;
 import com.fahadalisyed.logit.R;
@@ -65,6 +67,8 @@ public class Confirm extends Activity implements
     private TextView m_endDateTV;
     private TextView m_startTimeTV;
     private TextView m_endTimeTV;
+
+    private CircularProgressButton m_saveToCalendar;
 
     private LogItemManager m_logItemManager;
     private LogItem m_logItem;
@@ -132,6 +136,10 @@ public class Confirm extends Activity implements
 
         m_startTimeTV = (TextView)findViewById(R.id.startTime);
         m_endTimeTV = (TextView)findViewById(R.id.endTime);
+
+        m_saveToCalendar = (CircularProgressButton) findViewById(R.id.calendarProgressButton);
+        m_saveToCalendar.setIndeterminateProgressMode(true);
+        m_saveToCalendar.setProgress(0);
     }
 
     private void setViews() {
@@ -158,7 +166,7 @@ public class Confirm extends Activity implements
 
         saveLogItem();
         m_logItemManager.printLogItem(m_logItem);
-
+        m_saveToCalendar.setProgress(50);
         //finish();
         //overridePendingTransition(R.anim.fadein, R.anim.fadeout);
     }
@@ -257,11 +265,34 @@ public class Confirm extends Activity implements
         int duration = Toast.LENGTH_SHORT;
 
         Toast toast = Toast.makeText(context, text, duration);
+        toast.setGravity(Gravity.TOP| Gravity.CENTER_HORIZONTAL, 0, 175);
+
         toast.show();
-        if (message.equals("Saved to Google Calendar")) {
+
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                switch (message) {
+                    case "Saving":
+                        m_saveToCalendar.setProgress(50);
+                    case "Saved to Google Calendar":
+                        m_saveToCalendar.setProgress(100);
+                    case "Failed to save to calendar":
+                        m_saveToCalendar.setProgress(-1);
+                    case "No network connection available":
+                        m_saveToCalendar.setProgress(-1);
+                    default:
+                        m_saveToCalendar.setProgress(50);
+                }
+            }
+        });
+        /*if (message.equals("Saved to Google Calendar")) {
             finish();
             overridePendingTransition(R.anim.fadein, R.anim.fadeout);
-        }
+        } else {
+
+        }*/
     }
 
     /**
@@ -371,6 +402,7 @@ public class Confirm extends Activity implements
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            m_logLocation = "Toronto";
 
             if (addresses.size() > 0) {
                 Address currentAddress = addresses.get(0);
