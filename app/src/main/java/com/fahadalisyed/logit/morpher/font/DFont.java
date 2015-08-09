@@ -43,7 +43,7 @@ public class DFont implements Font {
 		mPath = new Path();
 
 		mPaint = new Paint();
-		mPaint.setColor(Color.argb(255, 38, 30, 43));
+		mPaint.setColor(Color.argb(255, 113, 69, 227));
 		mPaint.setAntiAlias(true);
 		mPaint.setStyle(Paint.Style.STROKE);
 		mPaint.setStrokeJoin(Paint.Join.ROUND);

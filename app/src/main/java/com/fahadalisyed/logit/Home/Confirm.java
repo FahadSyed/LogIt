@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -61,6 +62,7 @@ public class Confirm extends Activity implements
 
     private EditText m_activityNameET;
     private EditText m_activityDescriptionET;
+    private EditText m_locationTV;
 
     private TextView m_durationTV;
     private TextView m_startDateTV;
@@ -90,6 +92,7 @@ public class Confirm extends Activity implements
     private Location m_lastLocation;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         overridePendingTransition(R.anim.fadein, R.anim.fadeout);
         Intent intent = getIntent();
@@ -100,8 +103,6 @@ public class Confirm extends Activity implements
         setViews();
 
         m_logItemManager = LogItemManager.getInstance();
-
-        // Calendar
 
         // Initialize credentials and service object.
         SharedPreferences settings = getPreferences(Context.MODE_PRIVATE);
@@ -119,6 +120,7 @@ public class Confirm extends Activity implements
     }
 
     private void extractIntent( Intent intent ) {
+
         m_startDate = new Date();
         m_endDate = new Date();
 
@@ -128,12 +130,14 @@ public class Confirm extends Activity implements
     }
 
     private void setupGivenInformationViews() {
+
         m_activityNameET = (EditText)findViewById(R.id.logItemName);
         m_activityDescriptionET = (EditText)findViewById(R.id.logItemDescription);
+        m_locationTV = (EditText)findViewById(R.id.logItemLocation);
+
         m_durationTV = (TextView)findViewById(R.id.duration);
         m_startDateTV = (TextView)findViewById(R.id.startDate);
         m_endDateTV = (TextView)findViewById(R.id.endDate);
-
         m_startTimeTV = (TextView)findViewById(R.id.startTime);
         m_endTimeTV = (TextView)findViewById(R.id.endTime);
 
@@ -154,7 +158,7 @@ public class Confirm extends Activity implements
     public void saveToCalendar( View v ) {
         String logItemName = m_activityNameET.getText().toString();
         String logItemDescription = m_activityDescriptionET.getText().toString();
-
+        m_logLocation = m_locationTV.getText().toString();
         m_logItem = m_logItemManager.createLogItem(
                 logItemName,
                 logItemDescription,
@@ -402,11 +406,12 @@ public class Confirm extends Activity implements
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            m_logLocation = "Toronto";
 
-            if (addresses.size() > 0) {
+
+            if (addresses != null && addresses.size() > 0 ) {
                 Address currentAddress = addresses.get(0);
                 m_logLocation = currentAddress.getLocality() + ", " + currentAddress.getCountryCode();
+                m_locationTV.setText(m_logLocation);
             }
         }
     }

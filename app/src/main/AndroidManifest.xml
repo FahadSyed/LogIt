@@ -27,7 +27,7 @@
 
         <activity
             android:name=".Home.Confirm"
-            android:label="Confirm"
+            android:label="Save Log"
             android:windowSoftInputMode="adjustPan|adjustResize"
             android:parentActivityName=".Home.Home" >
             <meta-data

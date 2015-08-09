@@ -10,7 +10,6 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Message;
-import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,17 +17,15 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.fahadalisyed.logit.Log.LogItem;
 import com.fahadalisyed.logit.Services.LogService;
 import com.fahadalisyed.logit.R;
+import com.fahadalisyed.logit.Utilities.TimeFormat;
 import com.fahadalisyed.logit.morpher.DigitalClockView;
 import com.fahadalisyed.logit.morpher.font.DFont;
 
 import android.os.Handler;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 
 
 public class Home extends Activity {
@@ -48,6 +45,7 @@ public class Home extends Activity {
 
     private Button m_startButton;
     private Button m_stopButton;
+    private TextView m_currentDate;
     private LogService m_logService;
     private ServiceConnection m_logServiceConnection;
     private Handler m_logHandler;
@@ -65,8 +63,7 @@ public class Home extends Activity {
         startService(new Intent(this, LogService.class));
 
         // setup the buttons/handers/display/connection
-        setupStopButton();
-        setupStartButton();
+        setupViews();
         setupLogHandler();
         setupLogServiceConnection();
         setupNotificationReceiver();
@@ -136,14 +133,23 @@ public class Home extends Activity {
         m_stopButton.setVisibility((m_logService.isTrackerRunning() ? View.VISIBLE : View.GONE));
     }
 
-    private void setupStartButton() {
+    private void setupViews() {
         m_startButton = (Button)findViewById( R.id.startButton );
-    }
-
-    private void setupStopButton() {
         m_stopButton = (Button) findViewById( R.id.stopButton );
+        m_currentDate = (TextView)findViewById( R.id.currentDate );
+        setCurrentDate();
+
     }
 
+    private void setCurrentDate() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Calendar currentCalendar = Calendar.getInstance();
+                m_currentDate.setText(TimeFormat.formatDate(currentCalendar.getTime()));
+            }
+        });
+    }
     private void setupDigitalClockView() {
 
         mDigitalClockView = (DigitalClockView) findViewById(R.id.digitalClock);
@@ -207,9 +213,9 @@ public class Home extends Activity {
     @Override
     protected void onResume() {
         Log.d(TAG, "onResume");
-        if (m_logService != null && m_logService.isTrackerRunning())
+        if (m_logService != null && m_logService.isTrackerRunning()) {
             updateElapsedTime(m_elapsedTime);
-        //displayStartStopButtons();
+        }
         super.onResume();
     }
 

@@ -3,94 +3,58 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="com.fahadalisyed.logit.Home.Confirm">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Activity"
-            android:id="@+id/logItemNameHolder"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
+    android:background="#FFFFBD"
+    tools:context="com.fahadalisyed.logit.Home.Confirm"
+    android:weightSum="1"
+    android:orientation="vertical">
 
+<!--
         <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/logItemName"
-            android:layout_below="@+id/logItemNameHolder"
+            android:hint="Enter a name for this log"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" />
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="10dp" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Description"
-            android:id="@+id/logItemDescriptionHolder"
-            android:layout_below="@+id/logItemName"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
 
         <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/logItemDescription"
-            android:layout_below="@+id/logItemDescriptionHolder"
+            android:hint="Enter a description"
+            android:inputType="textMultiLine"
+            android:lines="2"
+            android:layout_below="@+id/logItemName"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" />
-
-    <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Duration"
-            android:id="@+id/duration"
-            android:layout_below="@+id/logItemDescription"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_marginTop="20dp" />
+            android:layout_alignRight="@+id/logItemName"
+            android:layout_alignEnd="@+id/logItemName"
+            android:layout_marginTop="5dp" />
 
 
-        <RelativeLayout
+    <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_alignRight="@+id/logItemDescription"
-            android:layout_alignEnd="@+id/logItemDescription"
-            android:layout_below="@+id/duration"
-            android:layout_marginTop="20dp">
+            android:layout_alignEnd="@+id/endDate"
+            android:layout_below="@+id/logItemDescription"
+            android:layout_marginTop="10dp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Start"
-                android:id="@+id/StartHolder"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:paddingTop="5dp" />
-
-            <TextView
+        <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="Date"
                 android:id="@+id/startDate"
-                android:layout_below="@+id/StartHolder"
-                android:layout_toRightOf="@+id/StartHolder"
-                android:layout_toEndOf="@+id/StartHolder"
-                android:paddingTop="5dp" />
+                android:paddingTop="5dp"
+                android:layout_below="@+id/duration" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -103,54 +67,281 @@
                 android:layout_alignStart="@+id/startDate"
                 android:paddingTop="5dp"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="End"
-                android:id="@+id/EndHolder"
-                android:layout_below="@+id/startTime"
-                android:paddingTop="5dp" />
-
-            <TextView
+        <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="Date"
+                android:text="DateEnd"
                 android:id="@+id/endDate"
-                android:layout_below="@+id/EndHolder"
-                android:layout_alignLeft="@+id/endTime"
-                android:layout_alignStart="@+id/endTime"
-                android:paddingTop="5dp"/>
+                android:paddingTop="5dp"
+                android:layout_below="@+id/duration"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="Time"
+                android:text="TimeEnd"
                 android:id="@+id/endTime"
-                android:layout_below="@+id/endDate"
-                android:layout_alignLeft="@+id/startDate"
-                android:layout_alignStart="@+id/startDate"
-                android:paddingTop="5dp"/>
+                android:paddingTop="5dp"
+                android:layout_alignTop="@+id/startTime"
+                android:layout_alignLeft="@+id/endDate"
+                android:layout_alignStart="@+id/endDate" />
 
-            <com.dd.CircularProgressButton
-                android:id="@+id/calendarProgressButton"
-                android:layout_width="196dp"
-                android:layout_height="64dp"
-                android:textColor="@color/cpb_white"
-                android:textSize="18sp"
-                android:onClick="saveToCalendar"
-                app:cpb_textComplete="Saved to Calendar"
-                app:cpb_textError="No Network"
-                app:cpb_textIdle="Save"
-                app:cpb_cornerRadius="48dp"
-                app:cpb_iconComplete="@drawable/ic_action_done"
-                app:cpb_iconError="@drawable/ic_content_clear"
-                android:layout_marginBottom="20dp"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Duration"
+            android:textColor="#7145E3"
+            android:textSize="20dp"
+            android:id="@+id/duration"
+            style="?android:listSeparatorTextViewStyle"
+            android:textStyle="italic"
+            android:gravity="center"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
 
-        </RelativeLayout>
+        <com.dd.CircularProgressButton
+            android:id="@+id/calendarProgressButton"
+            android:layout_width="196dp"
+            android:layout_height="64dp"
+            android:textColor="@color/cpb_white"
+            android:textSize="18sp"
+            android:onClick="saveToCalendar"
+            app:cpb_textComplete="Saved to Calendar"
+            app:cpb_textError="No Network"
+            app:cpb_textIdle="Save"
+            app:cpb_cornerRadius="48dp"
+            app:cpb_iconComplete="@drawable/ic_action_done"
+            app:cpb_iconError="@drawable/ic_content_clear"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="26dp" />
 
+    </RelativeLayout>
+-->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:layout_alignParentLeft="true"
+        android:id="@+id/titleDescriptionRL"
+        android:background="#7145E3"
+        android:layout_weight="0.37">
+
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:ems="10"
+            android:id="@+id/logItemName"
+            android:hint="Title"
+            android:textColor="#FFFFBD"
+            android:textColorHint="#FFFFFF"
+            android:backgroundTint="#FFFFFF"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginLeft="70dp"
+            android:layout_marginTop="26dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="false"
+            android:layout_marginRight="@dimen/activity_horizontal_margin" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="textMultiLine"
+            android:ems="10"
+            android:id="@+id/logItemDescription"
+            android:hint="Description"
+            android:textColor="#FFFFBD"
+            android:textColorHint="#FFFFFF"
+            android:backgroundTint="#FFFFFF"
+            android:layout_below="@+id/logItemName"
+            android:layout_alignLeft="@+id/logItemName"
+            android:layout_alignStart="@+id/logItemName"
+            android:layout_alignRight="@+id/logItemName"
+            android:layout_alignEnd="@+id/logItemName"
+            android:layout_marginTop="15dp" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageView"
+            android:src="@drawable/ic_action_label"
+            android:layout_toLeftOf="@+id/logItemDescription"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignTop="@+id/logItemName"
+            android:layout_above="@+id/logItemDescription" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageView2"
+            android:src="@drawable/ic_action_subject"
+            android:layout_toLeftOf="@+id/logItemDescription"
+            android:layout_alignTop="@+id/logItemDescription"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignBottom="@+id/logItemDescription" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:id="@+id/logItemLocation"
+            android:hint="Location"
+            android:textColor="#FFFFBD"
+            android:textColorHint="#FFFFFF"
+            android:backgroundTint="#FFFFFF"
+            android:layout_below="@+id/logItemDescription"
+            android:layout_toRightOf="@+id/imageView2"
+            android:layout_alignRight="@+id/logItemDescription"
+            android:layout_alignEnd="@+id/logItemDescription"
+            android:layout_marginTop="15dp" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageView5"
+            android:layout_alignTop="@+id/logItemLocation"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_toLeftOf="@+id/logItemLocation"
+            android:layout_toStartOf="@+id/logItemLocation"
+            android:layout_alignBottom="@+id/logItemLocation"
+            android:src="@drawable/ic_communication_location_on" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="41dp"
+        android:layout_alignParentLeft="true"
+        android:background="#FFFFBD"
+        android:layout_below="@+id/titleDescriptionRL"
+        android:id="@+id/statsRL"
+        android:layout_marginTop="15dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Duration"
+            android:id="@+id/duration"
+            android:textColor="#7145E3"
+            android:textSize="25dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:gravity="center_horizontal"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:textStyle="bold" />
+
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:layout_alignParentLeft="true"
+        android:background="#FFFFBD"
+
+        android:layout_below="@+id/statsRL"
+        android:id="@+id/durationRL"
+        android:layout_gravity="right"
+        android:layout_weight="0.05"
+        android:layout_marginTop="15dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="August 5"
+            android:id="@+id/startDate"
+            android:textColor="#7145E3"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="7:50"
+            android:id="@+id/startTime"
+            android:textColor="#7145E3"
+            android:layout_below="@+id/startDate"
+            android:layout_alignLeft="@+id/startDate"
+            android:layout_marginTop="5dp"
+            android:layout_toLeftOf="@+id/textView5"
+            android:layout_toStartOf="@+id/textView5"
+            android:gravity="center_horizontal" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="August 6"
+            android:id="@+id/endDate"
+            android:textColor="#7145E3"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="@dimen/activity_horizontal_margin" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="7:51"
+            android:id="@+id/endTime"
+            android:textColor="#7145E3"
+            android:layout_centerVertical="true"
+            android:layout_alignLeft="@+id/endDate"
+            android:layout_alignStart="@+id/endDate"
+            android:layout_marginTop="5dp"
+            android:layout_alignRight="@+id/endDate"
+            android:layout_alignEnd="@+id/endDate"
+            android:gravity="center_horizontal" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="to"
+            android:id="@+id/textView5"
+            android:layout_toRightOf="@+id/startDate"
+            android:layout_alignParentTop="true"
+            android:layout_alignBottom="@+id/startTime"
+            android:layout_toLeftOf="@+id/endDate"
+            android:layout_toStartOf="@+id/endDate"
+            android:gravity="center_vertical|center_horizontal" />
+
+
+    </RelativeLayout>
+
+    <com.dd.CircularProgressButton
+        android:id="@+id/calendarProgressButton"
+        android:layout_width="196dp"
+        android:layout_height="64dp"
+        android:textColor="@color/cpb_white"
+        android:textSize="18sp"
+        android:onClick="saveToCalendar"
+        app:cpb_textComplete="Saved to Calendar"
+        app:cpb_textError="No Network"
+        app:cpb_textIdle="Save"
+        app:cpb_cornerRadius="48dp"
+        app:cpb_iconComplete="@drawable/ic_action_done"
+        app:cpb_iconError="@drawable/ic_content_clear"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="26dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp" />
 </RelativeLayout>
