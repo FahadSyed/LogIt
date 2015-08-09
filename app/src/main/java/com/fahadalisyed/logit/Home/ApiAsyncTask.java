@@ -17,6 +17,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.TimeZone;
 /**
  * An asynchronous task that handles the Google Calendar API call.
@@ -51,8 +52,9 @@ public class ApiAsyncTask extends AsyncTask<Void, Void, Boolean> {
                     userRecoverableException.getIntent(),
                     mConfirmActivity.REQUEST_AUTHORIZATION);
         } catch (Exception e) {
-                mConfirmActivity.updateStatus("The following error occurred:\n" +
-                    e.getMessage());
+            Log.d("ApiAysncTask", "error: " + e.getMessage());
+                /*mConfirmActivity.updateStatus("The following error occurred:\n" +
+                    e.getMessage());*/
         }
         return false;
     }
@@ -103,6 +105,20 @@ public class ApiAsyncTask extends AsyncTask<Void, Void, Boolean> {
 
 
         String calendarId = "primary";
+        event.setColorId("6");
         mConfirmActivity.mService.events().insert(calendarId, event).execute();
+
+
+        // --- Temporary commented out --- Intended to be removed soon, not part of code.
+        /* Colors colors = mConfirmActivity.mService.colors().get().execute();
+        for (Map.Entry<String, ColorDefinition> color : colors.getCalendar().entrySet()) {
+            Log.d("ApiAsyncTask", "-----colorId:------ " + color.getKey());
+            Log.d("ApiAsyncTask", "backgorund: " + color.getValue().getBackground());
+
+            Log.d("ApiAsyncTask", "foreground: " + color.getValue().getForeground());
+
+            System.out.println("  Background: " + color.getValue().getBackground());
+            System.out.println("  Foreground: " + color.getValue().getForeground());
+        } */
     }
 }

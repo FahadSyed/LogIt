@@ -215,6 +215,7 @@ public class Home extends Activity {
         Log.d(TAG, "onResume");
         if (m_logService != null && m_logService.isTrackerRunning()) {
             updateElapsedTime(m_elapsedTime);
+            displayStartStopButtons();
         }
         super.onResume();
     }
