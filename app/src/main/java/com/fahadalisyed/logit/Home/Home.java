@@ -189,7 +189,7 @@ public class Home extends Activity {
         m_logService.stop();
         startConfirmScreen();
         displayStartStopButtons();
-        updateElapsedTime(INITIAL_MORPHER_TEXT); // Temporary!
+        //updateElapsedTime(INITIAL_MORPHER_TEXT); // Temporary!
     }
 
     @Override

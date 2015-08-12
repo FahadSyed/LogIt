@@ -105,7 +105,7 @@ public class ApiAsyncTask extends AsyncTask<Void, Void, Boolean> {
 
 
         String calendarId = "primary";
-        event.setColorId("6");
+        event.setColorId("7");
         mConfirmActivity.mService.events().insert(calendarId, event).execute();
 
 
